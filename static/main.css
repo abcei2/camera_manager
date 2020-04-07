@@ -1,0 +1,56 @@
+html, body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.body-container {
+    width: 100%;
+    min-height: 100%;
+    height: auto;
+    padding-bottom: 5vh;
+    position: relative;
+}
+
+nav.navbar.nav-padding{
+    padding: 0 4px;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    height: 25px;
+    width: 100%;
+    background-color: darkgrey;
+    color: white;
+    z-index: 5;
+}
+
+.camera_marker {
+    background-image: url('https://img.icons8.com/wired/64/000000/dome-camera.png');
+    background-size: cover;
+    width: 40px;
+    height: 40px;
+    border-radius: 10%;
+    background-color: lightgray;
+    cursor: pointer;
+}
+
+.marker_subtitle {
+    bottom: -20px;
+    position: absolute;
+    left: -50%;
+    right: -50%;
+    text-align: center;
+}
+
+.mapboxgl-popup {
+    max-width: 100% !important; /* This may cause future problems */
+}
+
+.mapboxgl-popup-close-button {
+    background-color: white;
+}

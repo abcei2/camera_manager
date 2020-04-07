@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+{% block title %}Home{% endblock title %}
+{% block main %}
+<a href="{% url 'cameras:new_camera' %}">NUEVA CAMARA</a>
+{% for cams in object_list %}
+
+<div class="card">
+
+	<div class="card-header">
+		<span class="font-weight-bold">{{ cams.url }}</span> &middot;
+		<span class="text-muted"> {{ cams.geopoint }}</span>
+	</div>
+
+	{% if cams.model_detector in 'FR'  %} 
+		<a href="{% url 'face_recognition:manage_detection' id_cam=cams.id %}">configurar detection de personas {{ cams.model_detector }}</a> || 
+		<a href="{% url 'face_recognition:dashboard' id_cam=cams.id %}">dashboard</a> 
+	{% endif %}
+
+	<a href="delete_camera/?id_cam={{ cams.id }}">Eliminar cámara</a>
+		
+</div>
+
+<br />
+{% endfor %}
+{% endblock main %}
