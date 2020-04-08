@@ -2,7 +2,8 @@ from django.urls import path
 from django.conf.urls import url
 
 from face_recognition.views import (
-   manage_detection, get_reports, LineChartJSONView, TemplateView,dashboard, get_detection
+   manage_detection, get_reports, LineChartJSONView, TemplateView,dashboard, get_detection,
+   add_new_face, get_face_by_name,delete_face_by_name
 )
 
 
@@ -16,6 +17,9 @@ urlpatterns = [
 
     path('line_chart_json/', line_chart_json, name='line_chart_json'),
     path('get_detection/', get_detection, {}, name='get_detection'),
+    path('get_face_by_name/', get_face_by_name, {}, name='get_face_by_name'),
+    path('add_new_face/', add_new_face, {}, name='add_new_face'),
     path('get_reports/', get_reports, {}, name='get_reports'),
+    path('delete_face_by_name/', delete_face_by_name, {}, name='delete_face_by_name'),
   #  url(r'^manage_cameras/manage_spots/$', manage_spots, name='manage_spots'),    
 ]

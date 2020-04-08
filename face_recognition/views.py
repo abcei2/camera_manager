@@ -18,6 +18,7 @@ from core.utils import coords_in_radius
 # ALL MODELS
 from face_recognition.models import FaceRecognitionCamera_reports
 from face_recognition.models import FaceRecognitionCamera
+from face_recognition.models import FacesModel
 from cameras.models import Camera
 # IMAGE TO STRING
 from django.core.serializers import serialize
@@ -34,26 +35,102 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 
 import requests
+import os
+import shutil
 
 def manage_detection(request, id_cam):
 
     detection_zone = FaceRecognitionCamera.objects.filter(camera_id__exact=id_cam)
+    faces= FacesModel.objects.all()
+    faces_registered=['unknown']
     camera = Camera.objects.filter(pk=id_cam)
     detection_zone_json = json.loads(serialize('json', detection_zone))[0]
     camera_json = json.loads(serialize('json', camera))[0]
-
+    for i in json.loads(serialize('json', faces)):
+        faces_registered.append(i['fields']['face'])
+    print("\nfaces")
+    print(faces_registered)
+    print("\n")
     data = {
         'data': {
             'id_cam':id_cam,
             'url':camera_json['fields']['url'], 
             'URL_EDIT': reverse('cameras:edit_url_camera'),
             'URL_GET_DETECTIONS': reverse('face_recognition:get_detection'),
-            'is_web_cam':camera_json['fields']['web_cam']
+            'URL_ADD_NEW_FACE': reverse('face_recognition:add_new_face'),
+            'URL_GET_FACES_IMAGES': reverse('face_recognition:get_face_by_name'),
+            'URL_DELETE_FACES_IMAGES': reverse('face_recognition:delete_face_by_name'),
+            'is_web_cam':camera_json['fields']['web_cam'],
+            'faces_registered':faces_registered
         }
     }
     print(data) 
     return render(request, 'face_recognition/manage_detection.html', data)
 
+def delete_face_by_name(request):
+    face_name = request.GET.get('face_name')
+    folder_url=f'static/face_images/{face_name}'  
+    shutil.rmtree(folder_url)
+    FacesModel.objects.filter(face=face_name).delete()
+    DATA = {
+        'message':"deleted"
+    }
+
+    return JsonResponse(DATA, safe=False)
+
+def get_face_by_name(request):
+
+    face_name = request.GET.get('face_name')
+    folder_url=f'static/face_images/{face_name}'  
+    images=[]
+    for counter_img in range(4):
+        print(counter_img)
+        with open(f'{folder_url}/{face_name}_{counter_img}.png', 'rb') as file1:
+            my_string = base64.b64encode(file1.read())
+            my_string="data:image/png;base64,"+str(my_string)[2:-1]
+            images.append(my_string)
+
+    DATA = {
+        'images':images
+    }
+
+    return JsonResponse(DATA, safe=False)
+
+
+@csrf_exempt
+def add_new_face(request):
+
+    print("HEREE!!")
+    face_name = request.POST.get('face_name')
+    
+    images = request.POST.getlist('images[]', None)
+    counter_img=0
+    folder_url=f'static/face_images/{face_name}'
+    print( os.path.isfile(folder_url))
+
+    try:
+        os.mkdir(folder_url)
+        for img in images:
+            format, imgstr = img.split(';base64,') 
+            ext = format.split('/')[-1] 
+            imgstr=base64.b64decode(imgstr)
+            with open(f'{folder_url}/{face_name}_{counter_img}.{ext}', 'wb') as file1:
+                file1.write(imgstr)
+            counter_img+=1
+        FacesModel_aux=FacesModel(
+             face=face_name)
+        FacesModel_aux.save()
+    except:
+        DATA = {
+            'message': "face existss"
+        }
+        return JsonResponse(DATA, safe=False)
+        
+    
+    DATA = {
+        'message': "images saveed"
+    }
+    return JsonResponse(DATA, safe=False)
 global bussy
 bussy=False
 @csrf_exempt

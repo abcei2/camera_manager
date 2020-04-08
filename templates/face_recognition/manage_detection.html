@@ -1,7 +1,13 @@
 {% extends 'core/base.html' %}
 {% load staticfiles %}
 {% block main %}
-
+<style>
+    .list-group{
+        max-height: 300px;
+        margin-bottom: 10px;
+        overflow:scroll;
+    }
+</style>
 <div id="container_web_cam" class="container">
 
     Register Face <input id="face_to_register" class="form-control" type="text" value= "" disabled style="vertical-align: center; height: 10%; width:30%;"/>
@@ -11,7 +17,8 @@
         <option value="detect" >Fetch detection</option>
     </select>
 
-    <button id="capture_button">capture_button</button>
+    <button id="capture_button">capture image</button>
+    <button id="register_button">register face</button>
     <div class="row">
         <div class="col-sm">
             <div class="embed-responsive embed-responsive-4by3">
@@ -76,9 +83,23 @@
                     
                     </div>
                 </div>
-            </div>
-            
       
+            </div>
+            <br>
+            <div id="register_containter_list" class="row">
+
+                <br>
+                <div class="col-sm">
+
+                    <ul id="faces_registered_list" style="overflow: scroll;" class="list-group">
+                    </ul> 
+                </div>
+
+                <div class="col-sm">
+                    <button id="delete_face_button">Delete selected face</button>
+
+                </div>      
+            </div>
         </div>
         
     </div> 
@@ -115,39 +136,8 @@
 <script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
 
 
-<!-- <script>
-  const canvas = document.getElementById('canvas');
-  const context = canvas.getContext('2d');
-  const captureButton = document.getElementById('capture');
-
-  const constraints = {
-    video: true,
-  };
-
-  captureButton.addEventListener('click', () => {
-    // Draw the video frame to the canvas.
-    context.drawImage(player, 0, 0, canvas.width, canvas.height);
-    var image = canvas.toDataURL("image/png");  // here is the most important part because if you dont replace you will get a DOM 18 exception.
-
-
-    window.location.href=image; // it will save locally
-    console.log(image)
-    player.srcObject.getVideoTracks().forEach(track => track.stop());
-
-  });
-
-  // Attach the video stream to the video element and autoplay.
-  navigator.mediaDevices.getUserMedia(constraints)
-    .then((stream) => {
-      player.srcObject = stream;
-     
-    });
-</script> -->
-
-
-    {{ data|json_script:"data" }}
-
-    <script src="{% static 'js/face_recognition/manage_detection.js' %}" type="text/javascript"></script>
+{{ data|json_script:"data" }}
+<script src="{% static 'js/face_recognition/manage_detection.js' %}" type="text/javascript"></script>
 
 
 {% endblock %}
