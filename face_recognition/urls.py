@@ -3,7 +3,7 @@ from django.conf.urls import url
 
 from face_recognition.views import (
    manage_detection, get_reports, LineChartJSONView, TemplateView,dashboard, get_detection,
-   add_new_face, get_face_by_name,delete_face_by_name
+   add_new_face, get_face_by_name, delete_face_by_name, update_faces_model
 )
 
 
@@ -20,6 +20,7 @@ urlpatterns = [
     path('get_face_by_name/', get_face_by_name, {}, name='get_face_by_name'),
     path('add_new_face/', add_new_face, {}, name='add_new_face'),
     path('get_reports/', get_reports, {}, name='get_reports'),
+    path('update_faces_model/', update_faces_model, {}, name='update_faces_model'),
     path('delete_face_by_name/', delete_face_by_name, {}, name='delete_face_by_name'),
   #  url(r'^manage_cameras/manage_spots/$', manage_spots, name='manage_spots'),    
 ]

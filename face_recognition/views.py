@@ -37,6 +37,7 @@ from django.views.decorators.csrf import csrf_exempt
 import requests
 import os
 import shutil
+import glob
 
 def manage_detection(request, id_cam):
 
@@ -60,12 +61,42 @@ def manage_detection(request, id_cam):
             'URL_ADD_NEW_FACE': reverse('face_recognition:add_new_face'),
             'URL_GET_FACES_IMAGES': reverse('face_recognition:get_face_by_name'),
             'URL_DELETE_FACES_IMAGES': reverse('face_recognition:delete_face_by_name'),
+            'URL_UPDATE_FACE_MODEL': reverse('face_recognition:update_faces_model'),
             'is_web_cam':camera_json['fields']['web_cam'],
             'faces_registered':faces_registered
         }
     }
     print(data) 
     return render(request, 'face_recognition/manage_detection.html', data)
+
+
+
+def update_faces_model(request):
+    response=requests.get('https://ai.tucanoar.com/faces_classify/delete_images/')
+    
+    folder_url=f'static/face_images/' 
+    # face_folders=[x[0] for x in os.walk(folder_url)]
+    # print(value)
+    face_names_list=os.listdir(folder_url)
+    for face_name in face_names_list:
+        face_image_list=os.listdir(f'{folder_url}/{face_name}')
+        for face_image in face_image_list:
+           # print(f'{folder_url}/{face_name}/{face_image}')
+            face_frame=cv2.imread(f'{folder_url}/{face_name}/{face_image}')
+             
+            files = {'json': (None, json.dumps({"face_name":face_name}), 'application/json'),
+                'file': ('image.jpg', cv2.imencode(".png", face_frame)[1], 'multipart/form-data')}
+            response = requests.post(f'https://ai.tucanoar.com/faces_classify/register_face/',
+                                files=files)
+            
+            print(response)
+
+    response=requests.get('https://ai.tucanoar.com/faces_classify/update_model/')      
+    print(response)
+    DATA = {
+        'message':"done"
+    }
+    return JsonResponse(DATA, safe=False)
 
 def delete_face_by_name(request):
     face_name = request.GET.get('face_name')
@@ -84,7 +115,7 @@ def get_face_by_name(request):
     folder_url=f'static/face_images/{face_name}'  
     images=[]
     for counter_img in range(4):
-        print(counter_img)
+        print(f'{folder_url}/{face_name}_{counter_img}.png')
         with open(f'{folder_url}/{face_name}_{counter_img}.png', 'rb') as file1:
             my_string = base64.b64encode(file1.read())
             my_string="data:image/png;base64,"+str(my_string)[2:-1]
@@ -110,12 +141,28 @@ def add_new_face(request):
 
     try:
         os.mkdir(folder_url)
+        ##### DETECT FACES AND LANDMARKS
+        
+       
+    
         for img in images:
             format, imgstr = img.split(';base64,') 
             ext = format.split('/')[-1] 
             imgstr=base64.b64decode(imgstr)
-            with open(f'{folder_url}/{face_name}_{counter_img}.{ext}', 'wb') as file1:
+            img_url=f'{folder_url}/{face_name}_{counter_img}.{ext}'
+            with open(img_url, 'wb') as file1:
                 file1.write(imgstr)
+            frame=cv2.imread(img_url)
+            image_to_upload=cv2.imencode(".png", frame)[1]
+            files = {'file': ('image.jpg', image_to_upload, 'multipart/form-data')}
+
+            response = requests.post(f'https://ai.tucanoar.com/faces/detect_faces/',
+                                        files=files)
+            detections=response.json()           
+                
+            for faces in detections['message']['faces_detected']:
+                face_image=frame[faces['upper_left'][1]:faces['down_right'][1],faces['upper_left'][0]:faces['down_right'][0]]
+                cv2.imwrite(img_url,face_image)
             counter_img+=1
         FacesModel_aux=FacesModel(
              face=face_name)
@@ -170,8 +217,8 @@ def get_detection(request):
 
         face_image=frame_not_draw[faces['upper_left'][1]:faces['down_right'][1],faces['upper_left'][0]:faces['down_right'][0]]
         
-        
-        face_image_to_upload=cv2.imencode(".jpg", face_image)[1]
+        if face_image.size != 0:
+            face_image_to_upload=cv2.imencode(".jpg", face_image)[1]
 
         ##### CLASSIFY FACES
         files = {'file': ('image.jpg', face_image_to_upload, 'multipart/form-data')}

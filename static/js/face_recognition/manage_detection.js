@@ -47,18 +47,20 @@ faces_registered_list.onclick = function (event) {
             var counter_imgs=0
             for(var i=0;i<response.images.length;i++){
 
+
                 //console.log(response.images[i])
                 var img = new Image();   // Create new img element
                 img.onload = function() {       
                     if(counter_imgs==0)     
-                        context.drawImage(img, 0, 0, canvas.width, canvas.height);                         
+                        context.drawImage(this, 0, 0, canvas.width, canvas.height);                         
                     else if(counter_imgs==1)
-                        context1.drawImage(img, 0, 0, canvas1.width, canvas1.height);     
+                        context1.drawImage(this, 0, 0, canvas1.width, canvas1.height);     
                     else if(counter_imgs==2)
-                        context2.drawImage(img, 0, 0, canvas2.width, canvas2.height);     
+                        context2.drawImage(this, 0, 0, canvas2.width, canvas2.height);     
                     else if(counter_imgs==3)
-                        context3.drawImage(img, 0, 0, canvas3.width, canvas3.height);
+                        context3.drawImage(this, 0, 0, canvas3.width, canvas3.height);
                     counter_imgs=counter_imgs+1
+                
                 };
                 img.src =response.images[i]
             }
@@ -124,7 +126,18 @@ if(DATA.is_web_cam){
     DATA_OUT={
         'img':'empty'
     }
-    
+/// BUTTONS ZONE    
+    var train_button = document.getElementById("train_button")
+    train_button.onclick=function(ev){
+        $.getJSON(DATA.URL_UPDATE_FACE_MODEL, {"none":"none"})
+            .done(function (response) {
+            console.log(response)
+            faces_registered_list.removeChild(item_selected)
+        })
+        .fail(function (response, textStatus, error) {
+            console.log(response, textStatus, error)
+        })
+    }
     var delete_face_button = document.getElementById("delete_face_button")
     delete_face_button.onclick=function(ev){
         if(face_selection!=-1)
