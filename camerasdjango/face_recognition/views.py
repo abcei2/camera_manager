@@ -14,9 +14,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from chartjs.views.lines import BaseLineChartView
 
-from face_recognition.models import (
-    FaceRecognitionCamera_reports, FacesModel
-)
+from face_recognition.models import FaceRecognitionReport, Face
 
 from cameras.models import Camera
 
@@ -25,19 +23,15 @@ bussy = False
 
 
 def manage_detection(request, id_cam):
-    faces = FacesModel.objects.all()
-    faces_registered = ['unknown']
-    camera = Camera.objects.filter(pk=id_cam)
-    camera_json = json.loads(serialize('json', camera))[0]
-    for i in json.loads(serialize('json', faces)):
-        faces_registered.append(i['fields']['face'])
-    print("\nfaces")
-    print(faces_registered)
-    print("\n")
-    data = {
+    faces = Face.objects.values_list('name', flat=True)
+    camera = Camera.objects.get(id=id_cam)
+
+    context = {
         'data': {
-            'id_cam': id_cam,
-            'url': camera_json['fields']['url'],
+            'url': camera.url,
+            'is_web_cam': camera.web_cam,
+            'faces_registered': list(faces),
+
             'URL_EDIT': reverse('cameras:edit_url_camera'),
             'URL_GET_DETECTIONS': reverse('face_recognition:get_detection'),
             'URL_ADD_NEW_FACE': reverse('face_recognition:add_new_face'),
@@ -47,12 +41,10 @@ def manage_detection(request, id_cam):
                 'face_recognition:delete_face_by_name'),
             'URL_UPDATE_FACE_MODEL': reverse(
                 'face_recognition:update_faces_model'),
-            'is_web_cam': camera_json['fields']['web_cam'],
-            'faces_registered': faces_registered
-        }
+        },
+        'SITE_TITLE': "Tucano AI"
     }
-    print(data)
-    return render(request, 'face_recognition/manage_detection.html', data)
+    return render(request, 'face_recognition/manage_detection.html', context)
 
 
 def update_faces_model(request):
@@ -98,12 +90,9 @@ def delete_face_by_name(request):
     face_name = request.GET.get('face_name')
     folder_url = f'static/face_images/{face_name}'
     shutil.rmtree(folder_url)
-    FacesModel.objects.filter(face=face_name).delete()
-    DATA = {
-        'message': "deleted"
-    }
+    Face.objects.filter(name=face_name).delete()
 
-    return JsonResponse(DATA, safe=False)
+    return JsonResponse({'message': "deleted"}, safe=False)
 
 
 def get_face_by_name(request):
@@ -162,7 +151,7 @@ def add_new_face(request):
                 cv2.imwrite(img_url, face_image)
             counter_img += 1
 
-        FacesModel.objects.create(face=face_name)
+        Face.objects.create(name=face_name)
 
     except:
         return JsonResponse({'message': "face exists"}, safe=False)
@@ -241,15 +230,10 @@ def get_detection(request):
 
 
 def get_reports(request):
-    result = []
-    face_reports = FaceRecognitionCamera_reports.objects.get(
+    face_reports = FaceRecognitionReport.objects.get(
         camera_id__exact=request.GET.get('cam_id'))
 
-    face_reports = json.loads(serialize('json', face_reports))[0]
-    print(face_reports)
-
-    result.append({'name': 'name', "data": 'data'})
-    return result
+    return face_reports
 
 
 class LineChartJSONView(BaseLineChartView):

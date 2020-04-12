@@ -6,7 +6,6 @@ from django.urls import reverse
 
 from core.view_utils import BaseView
 from cameras.models import Camera
-from face_recognition.models import FaceRecognitionCamera
 
 
 def delete_camera(request):
@@ -24,10 +23,6 @@ def create_new_camera(request):
     new_cam = Camera(url=url, geopoint=geopoint,
                      detector_type=detector_type, web_cam=web_cam)
     new_cam.save()
-
-    if(detector_type == 'FR'):
-        FaceAux = FaceRecognitionCamera(camera=new_cam)
-        FaceAux.save()
 
     CAM_DATA = {
         'url': url,

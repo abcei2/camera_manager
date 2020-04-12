@@ -9,9 +9,8 @@ from face_recognition.views import (
 
 app_name = 'face_recognition'
 urlpatterns = [
+    path('<str:id_cam>', manage_detection, name='manage_detection'),
     path('<str:id_cam>/dashboard/', dashboard, name='dashboard'),
-    path('<str:id_cam>/manage_detection/',
-         manage_detection, name='manage_detection'),
 
     path('line_chart_json/',
          LineChartJSONView.as_view(), name='line_chart_json'),
