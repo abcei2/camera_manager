@@ -7,16 +7,16 @@ from django.utils.translation import ugettext_lazy as _
 from decimal import Decimal
 
 
-class Camera(BaseModel):
+DETECTOR_TYPES = (
+    ('face_recogntion', _('Face recognition')),
+)
 
-    FACE_RECOGNTION = 'FR'
-    MODEL_DETECTOR = [
-        (FACE_RECOGNTION, 'FACE_RECOGNTION'),
-    ]
-    model_detector = models.CharField(
-        max_length=2,
-        choices=MODEL_DETECTOR,
-        default=FACE_RECOGNTION,
+
+class Camera(BaseModel):
+    detector_type = models.CharField(
+        max_length=32,
+        choices=DETECTOR_TYPES,
+        default='face_recognition',
     )
 
     url = models.URLField()

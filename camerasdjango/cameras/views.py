@@ -12,9 +12,7 @@ from face_recognition.models import FaceRecognitionCamera
 def delete_camera(request):
     if request.method == 'GET':
         id_cam = request.GET.get('id_cam')
-        print(id_cam)
-        camera_of_spots = Camera.objects.get(pk=id_cam)
-        camera_of_spots.delete()
+        Camera.objects.get(pk=id_cam).delete()
         return render(request, 'cam/cam_list.html', {'data': 'data'})
 
 
@@ -22,12 +20,12 @@ def create_new_camera(request):
     web_cam = request.GET.get('web_cam')
     url = request.GET.get('url')
     geopoint = request.GET.get('geopoint')
-    model_detector = request.GET.get('model_detector')
+    detector_type = request.GET.get('detector_type')
     new_cam = Camera(url=url, geopoint=geopoint,
-                     model_detector=model_detector, web_cam=web_cam)
+                     detector_type=detector_type, web_cam=web_cam)
     new_cam.save()
 
-    if(model_detector == 'FR'):
+    if(detector_type == 'FR'):
         FaceAux = FaceRecognitionCamera(camera=new_cam)
         FaceAux.save()
 
@@ -64,7 +62,7 @@ def get_camera_position(request):
             'shortid': cam.short_id,
             'id_cam': cam.id,
             'coords': cam.coords,
-            'model_detector': cam.model_detector,
+            'detector_type': cam.detector_type,
         }
         all_cams.append(cameras)
     return JsonResponse({'cameras': all_cams}, safe=False)
