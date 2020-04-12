@@ -1,8 +1,9 @@
 from django.db import models
 from core.model_utils import BaseModel
-from django.db import models
 from django.conf import settings
 from django.utils.functional import cached_property
+from django.utils.translation import ugettext_lazy as _
+
 from decimal import Decimal
 
 
@@ -29,6 +30,15 @@ class Camera(BaseModel):
         return list(map(lambda x: Decimal(x), self.geopoint.split(',')))
 
     @cached_property
+    def latlon_geopoint(self):
+        gpoint = self.coords
+        gpoint.reverse()
+        return ','.join([str(gp) for gp in gpoint])
+
+    @cached_property
     def last_frame(self):
         return f"{settings.MEDIA_URL}{self.short_id}.png"
 
+    @cached_property
+    def title(self):
+        return f'{_("Web cam")} {self.url}' if self.web_cam else self.url

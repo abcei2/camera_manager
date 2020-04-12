@@ -2,10 +2,6 @@ import uuid
 from typing import Dict, Any
 
 from django.db import models
-from django.conf import settings
-from django.utils.functional import cached_property
-
-from decimal import Decimal
 
 
 DANGEROUS_ATTRS = ('password',)
@@ -66,6 +62,3 @@ class BaseModel(models.Model):
 
     class Meta:
         abstract = True
-
-
-
