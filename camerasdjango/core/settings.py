@@ -18,6 +18,8 @@ MEDIA_DIR = os.path.abspath(os.path.join(DATA_DIR, 'media'))
 ENV_DIR = os.path.join(REPO_DIR, 'env')
 ENV_SECRETS_FILE = os.path.join(ENV_DIR, 'secrets.env')
 
+FACES_DIR = os.path.abspath(os.path.join(MEDIA_DIR, 'faces'))
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 

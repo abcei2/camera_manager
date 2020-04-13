@@ -98,11 +98,9 @@ function fetchZones() {
 
     $.post(DATA.URL_GET_DETECTIONS, {img: image})
         .done(function(response) {
-            console.log("response", response.img)
-            var img = new Image(); // Create new img element
+            var img = new Image()
             img.onload = function() {
                 detection_context.drawImage(img, 0, 0, detection_canvas.width, detection_canvas.height);
-
             };
             img.src = response.img
         })
@@ -115,9 +113,7 @@ if (DATA.is_web_cam) {
     /// BUTTONS ZONE
     var train_button = document.getElementById("train_button")
     train_button.onclick = function(ev) {
-        $.getJSON(DATA.URL_UPDATE_FACE_MODEL, {
-                "none": "none"
-            })
+        $.getJSON(DATA.URL_UPDATE_FACE_MODEL)
             .done(function(response) {
                 console.log(response)
                 faces_registered_list.removeChild(item_selected)
@@ -183,30 +179,23 @@ if (DATA.is_web_cam) {
     register_button.onclick = function(ev) {
         console.log(counter_context)
         if (counter_context == 4) {
-            console.log("REGISTER FACE: ", face_to_register.value)
-
-            DATA_OUT_AUX = {
-                'images': 's',
-                'face_name': face_to_register.value
+            face_data = {
+                face_name: face_to_register.value,
+                images: [
+                    canvas.toDataURL(image_format),
+                    canvas1.toDataURL(image_format),
+                    canvas2.toDataURL(image_format),
+                    canvas3.toDataURL(image_format)
+                ]
             }
-            DATA_OUT_AUX.images = [
-                canvas.toDataURL(image_format),
-                canvas1.toDataURL(image_format),
-                canvas2.toDataURL(image_format),
-                canvas3.toDataURL(image_format)
-            ]
-            console.log("fetching..", DATA_OUT_AUX)
 
-            $.post(DATA.URL_ADD_NEW_FACE, DATA_OUT_AUX)
+            $.post(DATA.URL_ADD_NEW_FACE, face_data)
                 .done(function(response) {
                     console.log("response", response)
-
                 })
                 .fail(function(response, textStatus, error) {
                     console.log(response, textStatus, error)
                 })
-
-
 
             var listItem = document.createElement("li")
             listItem.className = "list-group-item list-group-item-dark"

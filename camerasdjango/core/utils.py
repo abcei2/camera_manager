@@ -1,5 +1,9 @@
 import os
+import cv2
 import json
+import base64
+
+import numpy as np
 
 from geopy.distance import geodesic
 
@@ -50,3 +54,8 @@ def coords_in_radius(coords, center, radius, lnglat=True):
     _coords = swap_coords(coords) if lnglat else coords
     _center = swap_coords(center) if lnglat else center
     return geodesic(_coords, _center).meters < radius
+
+
+def frame_from_b64image(b64image):
+    nparr = np.fromstring(base64.b64decode(b64image), np.uint8)
+    return cv2.imdecode(nparr, cv2.IMREAD_COLOR)
