@@ -92,22 +92,24 @@ var counter_context = 0
 var image_format = "image/png"
 var schedule_task = undefined
 
-function fetchZones() {
+function identifyFace() {
     detection_context_aux.drawImage(player, 0, 0, detection_canvas_aux.width, detection_canvas_aux.height);
     image = detection_canvas_aux.toDataURL(image_format);
 
     $.post(DATA.URL_GET_DETECTIONS, {img: image})
         .done(function(response) {
             var img = new Image()
-            img.onload = function() {
-                detection_context.drawImage(img, 0, 0, detection_canvas.width, detection_canvas.height);
-            };
+            img.onload = () => detection_context.drawImage(
+                img, 0, 0, detection_canvas.width, detection_canvas.height
+            )
             img.src = response.img
         })
-        .fail(function(response, textStatus, error) {
+        .fail((response, textStatus, error) => {
             console.log(response, textStatus, error)
         })
 }
+window.tify = identifyFace
+
 if (DATA.is_web_cam) {
 
     /// BUTTONS ZONE
@@ -116,7 +118,6 @@ if (DATA.is_web_cam) {
         $.getJSON(DATA.URL_UPDATE_FACE_MODEL)
             .done(function(response) {
                 console.log(response)
-                faces_registered_list.removeChild(item_selected)
             })
             .fail(function(response, textStatus, error) {
                 console.log(response, textStatus, error)
@@ -224,7 +225,7 @@ if (DATA.is_web_cam) {
         }
         clearInterval(schedule_task)
     } else if (selected_task.value == "detect") {
-        schedule_task = setInterval(fetchZones, 5000);
+        schedule_task = setInterval(identifyFace, 5000);
 
         register_button.hidden = true
         detection_containter.hidden = false
@@ -245,7 +246,7 @@ if (DATA.is_web_cam) {
             }
             clearInterval(schedule_task)
         } else if (this.value == "detect") {
-            schedule_task = setInterval(fetchZones, 5000);
+            schedule_task = setInterval(identifyFace, 5000);
             detection_containter.hidden = false
             register_containter.hidden = true
             capture_button.disabled = true
