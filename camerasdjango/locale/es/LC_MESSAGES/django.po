@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-13 16:19+0000\n"
+"POT-Creation-Date: 2020-04-13 16:45+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -116,7 +116,8 @@ msgstr "Capturar"
 
 #: camerasdjango/templates/face_recognition/manage_detection.html:62
 msgid "Give this face a unique identifier"
-msgstr "Asigna a este rostro un identificador único como el número de identificación"
+msgstr ""
+"Asigna a este rostro un identificador único como el número de identificación"
 
 #: camerasdjango/templates/face_recognition/manage_detection.html:101
 msgid "Delete selected face"

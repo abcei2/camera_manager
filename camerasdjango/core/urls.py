@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 from django.views.generic.base import RedirectView
 from django.views.i18n import JavaScriptCatalog
 
+
 urlpatterns = [
     path('', RedirectView.as_view(url='/cameras/manage_cameras'), name='home'),
     path('cameras/', include(
