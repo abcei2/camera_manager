@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-04-11 22:56+0000\n"
+"POT-Creation-Date: 2020-04-13 16:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,14 +18,110 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: camerasdjango/core/settings.py:205
+#: camerasdjango/cameras/models.py:11
+msgid "Face recognition"
+msgstr "Reconocimiento facial"
+
+#: camerasdjango/core/settings.py:198
 msgid "English"
 msgstr "Inglés"
 
-#: camerasdjango/core/settings.py:206
+#: camerasdjango/core/settings.py:199
 msgid "Spanish"
 msgstr "Español"
 
-#: camerasdjango/templates/cam/cam_list.html:10
+#: camerasdjango/face_recognition/views.py:77
+msgid "Done"
+msgstr "Hecho"
+
+#: camerasdjango/face_recognition/views.py:89
+msgid "Face deleted"
+msgstr "Rostro eliminado"
+
+#: camerasdjango/face_recognition/views.py:133
+#: camerasdjango/face_recognition/views.py:182
+msgid "Couldn't detect exactly one face"
+msgstr "No fue posible detectar exactamente 1 rostro"
+
+#: camerasdjango/face_recognition/views.py:147
+msgid "Face registered"
+msgstr "Rostro guardado"
+
+#: camerasdjango/face_recognition/views.py:157
+msgid "Detector busy"
+msgstr "Detector no disponible"
+
+#: camerasdjango/face_recognition/views.py:174
+msgid "Couldn't extract face from image"
+msgstr "No fue posible extraer el rostro de la imagen"
+
+#: camerasdjango/face_recognition/views.py:212
+msgid "Failed to classify face :C"
+msgstr "No fue posible identificar el rostro"
+
+#: camerasdjango/templates/cam/cam_list.html:11
 msgid "Add camera"
 msgstr "Agregar cámara"
+
+#: camerasdjango/templates/cam/cam_list.html:36
+msgid "Manage"
+msgstr "Gestionar"
+
+#: camerasdjango/templates/cam/cam_list.html:39
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: camerasdjango/templates/cam/cam_list.html:42
+#, fuzzy
+#| msgid "Add camera"
+msgid "Delete camera"
+msgstr "Eliminar cámara"
+
+#: camerasdjango/templates/core/navigation.html:14
+msgid "Gestionar celdas"
+msgstr ""
+
+#: camerasdjango/templates/core/navigation.html:29
+msgid "User Settings"
+msgstr "Perfil"
+
+#: camerasdjango/templates/core/navigation.html:33
+msgid "Admin Interface"
+msgstr "Admin"
+
+#: camerasdjango/templates/core/navigation.html:36
+msgid "Logout"
+msgstr "Salir"
+
+#: camerasdjango/templates/face_recognition/manage_detection.html:6
+msgid "Face recogniser"
+msgstr "Reconocedor facial"
+
+#: camerasdjango/templates/face_recognition/manage_detection.html:14
+#: camerasdjango/templates/face_recognition/manage_detection.html:65
+msgid "Register face"
+msgstr "Registrar rostro"
+
+#: camerasdjango/templates/face_recognition/manage_detection.html:15
+msgid "Identify face"
+msgstr "Identificar rostro"
+
+#: camerasdjango/templates/face_recognition/manage_detection.html:30
+msgid "Grab some images to register a new face"
+msgstr "Captura algunas imagenes para registrar un nuevo rostro"
+
+#: camerasdjango/templates/face_recognition/manage_detection.html:32
+msgid "Capture image"
+msgstr "Capturar"
+
+#: camerasdjango/templates/face_recognition/manage_detection.html:62
+msgid "Give this face a unique identifier"
+msgstr "Asigna a este rostro un identificador único como el número de identificación"
+
+#: camerasdjango/templates/face_recognition/manage_detection.html:101
+msgid "Delete selected face"
+msgstr "Eliminar rostro seleccionado"
+
+#: camerasdjango/templates/face_recognition/manage_detection.html:107
+msgid "Update model"
+msgstr "Actualizar modelo"

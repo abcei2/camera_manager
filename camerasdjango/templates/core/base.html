@@ -6,7 +6,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{{SITE_TITLE}} | {% block title %}Home{% endblock %}</title>
-        <link rel="shortcut icon" type="image/png" href="{% static 'favicon.ico' %}"/>
+        <link rel="icon" type="image/png" href="{% static 'favicon.ico' %}"/>
 
         {% block metatags %}{% endblock %}
 
@@ -29,6 +29,7 @@
         <script src="{% static 'vendor/popper-1.14.3/popper.min.js' %}" type="text/javascript"></script>
         <script src="{% static 'vendor/bootstrap-4.3.1/js/bootstrap.min.js' %}" type="text/javascript"></script>
         <script src="{% static 'js/overrides.js' %}" type="text/javascript"></script>
+        <script src="{% url 'javascript-catalog' %}" type="text/javascript"></script>
     </head>
 
     <body>
