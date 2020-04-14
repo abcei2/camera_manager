@@ -72,8 +72,6 @@ msgid "Dashboard"
 msgstr "Dashboard"
 
 #: camerasdjango/templates/cam/cam_list.html:42
-#, fuzzy
-#| msgid "Add camera"
 msgid "Delete camera"
 msgstr "Eliminar cámara"
 
