@@ -152,7 +152,7 @@ def add_new_face(request):
 bussy = False
 
 
-@csrf_exempt
+@csrf_exemptss
 @require_POST
 def get_detection(request):
     global bussy
