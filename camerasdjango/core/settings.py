@@ -18,6 +18,8 @@ MEDIA_DIR = os.path.abspath(os.path.join(DATA_DIR, 'media'))
 ENV_DIR = os.path.join(REPO_DIR, 'env')
 ENV_SECRETS_FILE = os.path.join(ENV_DIR, 'secrets.env')
 
+FACES_DIR = os.path.abspath(os.path.join(MEDIA_DIR, 'faces'))
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -61,7 +63,7 @@ CAR_SCORE = 0.8
 PEDESTRIAN_CLS_NAMES = ['person']
 PEDESTRIAN_SCORE = 0.8
 ENABLE_DETECTOR = True
-ENABLE_FALSE_DETECTOR=False
+ENABLE_FALSE_DETECTOR = False
 
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -72,7 +74,8 @@ ENABLE_FALSE_DETECTOR=False
 SETTINGS_DEFAULTS = load_env_settings(env=globals())
 
 # settings set via env/secrets.env
-ENV_SECRETS = load_env_settings(dotenv_path=ENV_SECRETS_FILE, defaults=globals())
+ENV_SECRETS = load_env_settings(
+    dotenv_path=ENV_SECRETS_FILE, defaults=globals())
 globals().update(ENV_SECRETS)
 
 # settings set via environemtn variables
@@ -126,7 +129,7 @@ STATICFILES_DIRS = [STATICFILES_DIR]
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [TEMPLATES_DIR,JSON_DIR],
+        'DIRS': [TEMPLATES_DIR, JSON_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

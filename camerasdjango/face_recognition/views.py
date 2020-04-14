@@ -5,23 +5,22 @@ import base64
 import shutil
 import requests
 
+from django.conf import settings
 from django.shortcuts import render
 from django.http import JsonResponse
-from django.core.serializers import serialize
-from django.views.decorators.csrf import csrf_exempt
 from django.urls import reverse
+from django.views.decorators.http import require_POST, require_GET
 from django.utils.translation import ugettext_lazy as _
 
 from chartjs.views.lines import BaseLineChartView
 
+from core.utils import frame_from_b64image
 from face_recognition.models import FaceRecognitionReport, Face
-
 from cameras.models import Camera
+from django.views.decorators.csrf import csrf_exempt
 
 
-bussy = False
-
-
+@require_GET
 def manage_detection(request, id_cam):
     faces = Face.objects.values_list('name', flat=True)
     camera = Camera.objects.get(id=id_cam)
@@ -48,10 +47,9 @@ def manage_detection(request, id_cam):
 
 
 def update_faces_model(request):
-    response = requests.get(
-        'https://ai.tucanoar.com/faces_classify/delete_images/')
+    requests.get('https://ai.tucanoar.com/faces_classify/delete_images/')
 
-    folder_url = f'static/face_images/'
+    folder_url = settings.FACES_DIR
     face_names_list = os.listdir(folder_url)
     for face_name in face_names_list:
         face_image_list = os.listdir(f'{folder_url}/{face_name}')
@@ -70,163 +68,168 @@ def update_faces_model(request):
                     'multipart/form-data'
                 )
             }
-            response = requests.post(
+            requests.post(
                 f'https://ai.tucanoar.com/faces_classify/register_face/',
                 files=files
             )
 
-            print(response)
+    requests.get('https://ai.tucanoar.com/faces_classify/update_model/')
 
-    response = requests.get(
-        'https://ai.tucanoar.com/faces_classify/update_model/')
-    print(response)
-    DATA = {
-        'message': "done"
-    }
-    return JsonResponse(DATA, safe=False)
+    return JsonResponse({'message': _("Done")})
 
 
 def delete_face_by_name(request):
     face_name = request.GET.get('face_name')
-    folder_url = f'static/face_images/{face_name}'
-    shutil.rmtree(folder_url)
     Face.objects.filter(name=face_name).delete()
 
-    return JsonResponse({'message': "deleted"}, safe=False)
+    try:
+        shutil.rmtree(f'{settings.FACES_DIR}/{face_name}')
+    except FileNotFoundError:
+        pass
+
+    return JsonResponse({'message': _("Face deleted")}, safe=False)
 
 
 def get_face_by_name(request):
-
     face_name = request.GET.get('face_name')
-    folder_url = f'static/face_images/{face_name}'
+
     images = []
-    for counter_img in range(4):
-        print(f'{folder_url}/{face_name}_{counter_img}.png')
-        with open(f'{folder_url}/{face_name}_{counter_img}.png', 'rb') as fp:
-            my_string = base64.b64encode(fp.read())
-            my_string = "data:image/png;base64," + str(my_string)[2:-1]
-            images.append(my_string)
+    faces_path = f'{settings.FACES_DIR}/{face_name}'
+
+    try:
+        for face_file in os.listdir(faces_path):
+            with open(f'{faces_path}/{face_file}', 'rb') as fp:
+                my_string = base64.b64encode(fp.read())
+                my_string = "data:image/png;base64, " + str(my_string)[2:-1]
+                images.append(my_string)
+    except FileNotFoundError:
+        pass
 
     return JsonResponse({'images': images}, safe=False)
 
 
 @csrf_exempt
 def add_new_face(request):
-
-    print("HEREE!!")
     face_name = request.POST.get('face_name')
+    images = request.POST.getlist('images[]', [])
 
-    images = request.POST.getlist('images[]', None)
-    counter_img = 0
-    folder_url = f'static/face_images/{face_name}'
-    print(os.path.isfile(folder_url))
+    faces_dir = f"{settings.FACES_DIR}/{face_name}"
+    if not os.path.isdir(faces_dir):
+        os.mkdir(faces_dir)
 
-    try:
-        os.mkdir(folder_url)
-        # DETECT FACES AND LANDMARKS
+    for counter_img, img in enumerate(images):
+        frame = frame_from_b64image(img.split(';base64,')[1])
 
-        for img in images:
-            format, imgstr = img.split(';base64,')
-            ext = format.split('/')[-1]
-            imgstr = base64.b64decode(imgstr)
-            img_url = f'{folder_url}/{face_name}_{counter_img}.{ext}'
-            with open(img_url, 'wb') as fp:
-                fp.write(imgstr)
-            frame = cv2.imread(img_url)
-            image_to_upload = cv2.imencode(".png", frame)[1]
-            files = {'file': ('image.jpg', image_to_upload,
-                              'multipart/form-data')}
+        image_to_upload = cv2.imencode(".png", frame)[1]
 
-            response = requests.post(
-                f'https://ai.tucanoar.com/faces/detect_faces/',
-                files=files
+        response = requests.post(
+            f'https://ai.tucanoar.com/faces/detect_faces/',
+            files={
+                'file': ('image.jpg', image_to_upload, 'multipart/form-data')
+            }
+        )
+        detections = response.json()
+
+        if detections['message']['num_of_detections'] != 1:
+            return JsonResponse(
+                {'message': _("Couldn't detect exactly one face")},
+                status=503
             )
-            detections = response.json()
 
-            for faces in detections['message']['faces_detected']:
-                face_image = frame[
-                    faces['upper_left'][1]:faces['down_right'][1],
-                    faces['upper_left'][0]:faces['down_right'][0]
-                ]
-                cv2.imwrite(img_url, face_image)
-            counter_img += 1
+        face = detections['message']['faces_detected'][0]
+        face_image = frame[
+            face['upper_left'][1]:face['down_right'][1],
+            face['upper_left'][0]:face['down_right'][0]
+        ]
 
-        Face.objects.create(name=face_name)
+        cv2.imwrite(f"{faces_dir}/{counter_img}.png", face_image)
 
-    except:
-        return JsonResponse({'message': "face exists"}, safe=False)
+    Face.objects.create(name=face_name)
 
-    return JsonResponse({'message': "images saved"}, safe=False)
+    return JsonResponse({'message': _("Face registered")})
+
+
+bussy = False
 
 
 @csrf_exempt
+@require_POST
 def get_detection(request):
     global bussy
     if bussy:
-        return JsonResponse({'message': _("Detector busy")}, safe=False)
+        return JsonResponse({'message': _("Detector busy")}, status=503)
 
     bussy = True
 
     img = request.POST.get('img')
-    format, imgstr = img.split(';base64,')
-    ext = format.split('/')[-1]
-    imgstr = base64.b64decode(imgstr)
-    with open(f'static/temp.{ext}', 'wb') as file1:
-        file1.write(imgstr)
-    frame = cv2.imread(f'static/temp.{ext}')
+
+    frame = frame_from_b64image(img.split(';base64,')[1])
     frame_not_draw = frame.copy()
     frame_to_upload = cv2.imencode(".png", frame)[1]
 
-    # DETECT FACES AND LANDMARKS
-    files = {'file': ('image.jpg', frame_to_upload, 'multipart/form-data')}
+    response = requests.post(
+        f'https://ai.tucanoar.com/faces/detect_faces/',
+        files={'file': ('image.jpg', frame_to_upload, 'multipart/form-data')}
+    )
 
-    response = requests.post(f'https://ai.tucanoar.com/faces/detect_faces/',
-                             files=files)
+    if response.status_code not in [200, 201]:
+        return JsonResponse(
+            {'message': _("Couldn't extract face from image")},
+            status=503
+        )
+
     detections = response.json()
-    for faces in detections['message']['faces_detected']:
 
-        # DRAW BBOX AND LANDMARKS
-        cv2.rectangle(
-            frame,
-            (faces['upper_left'][0], faces['upper_left'][1]),
-            (faces['down_right'][0], faces['down_right'][1]),
-            (0, 200, 0)
-        )
-        for landmark in faces["landmarks"]:
-            cv2.circle(frame, (landmark[0], landmark[1]), 2, (0, 255, 0), -1)
-
-        face_image = frame_not_draw[
-            faces['upper_left'][1]:faces['down_right'][1],
-            faces['upper_left'][0]:faces['down_right'][0]
-        ]
-
-        if face_image.size != 0:
-            face_image_to_upload = cv2.imencode(".jpg", face_image)[1]
-
-        # CLASSIFY FACES
-        files = {'file': ('image.jpg', face_image_to_upload,
-                          'multipart/form-data')}
-
-        response = requests.post(
-            f'https://ai.tucanoar.com/faces_classify/classify_faces/',
-            files=files
-        )
-        classifications = response.json()
-
-        cv2.putText(
-            frame,
-            classifications['message']['face_detect'],
-            (faces['upper_left'][0], faces['upper_left'][1]),
-            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1
+    if detections['message']['num_of_detections'] != 1:
+        return JsonResponse(
+            {'message': _("Couldn't detect exactly one face")},
+            status=503
         )
 
-    cv2.imwrite("static/detection_output.png", frame)
-    with open(f'static/detection_output.png', 'rb') as file1:
-        my_string = base64.b64encode(file1.read())
-        my_string = "data:image/png;base64," + str(my_string)[2:-1]
+    face = detections['message']['faces_detected'][0]
+
+    cv2.rectangle(
+        frame,
+        (face['upper_left'][0], face['upper_left'][1]),
+        (face['down_right'][0], face['down_right'][1]),
+        (0, 200, 0)
+    )
+
+    face_image = frame_not_draw[
+        face['upper_left'][1]:face['down_right'][1],
+        face['upper_left'][0]:face['down_right'][0]
+    ]
+
+    if face_image.size != 0:
+        face_to_classify = cv2.imencode(".jpg", face_image)[1]
+
+    response = requests.post(
+        f'https://ai.tucanoar.com/faces_classify/classify_faces/',
+        files={
+            'file': ('image.jpg', face_to_classify, 'multipart/form-data')
+        }
+    )
+
+    if response.status_code not in [200, 201]:
+        return JsonResponse(
+            {'message': _("Failed to classify face :C")},
+            status=503
+        )
+
+    classifications = response.json()
+
+    cv2.putText(
+        frame,
+        classifications['message']['face_detect'],
+        (face['upper_left'][0], face['upper_left'][1]),
+        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1
+    )
+
+    the_png = cv2.imencode('.png', frame)[1]
+    png_as_text = base64.b64encode(the_png).decode("utf-8")
 
     bussy = False
-    return JsonResponse({'img': str(my_string)}, safe=False)
+    return JsonResponse({'img': f"data:image/png;base64, {png_as_text}"})
 
 
 def get_reports(request):
