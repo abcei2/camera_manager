@@ -8,10 +8,11 @@ let player = document.getElementById('player');
 let capture_button = document.getElementById("capture_button")
 
 const constraints = {
-    video: {facingMode: 'environment'},
+    video: {
+        facingMode: 'environment'
+    },
     audio: false
 };
-
 
 
 
@@ -20,27 +21,27 @@ let faces_registered_list = document.getElementById("faces_registered_list")
 let face_selection = -1
 let face_name_selection = "unknown"
 
-let is_mobile=false
+let is_mobile = false
 
 let selected_task = document.getElementById("selected_task")
 
-if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
-    is_mobile=true
+if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    is_mobile = true
 
-    web_container.hidden=true
-    capture_button.hidden=true
-    player_mobile.hidden=false
-    
-    let counter_imgs=0
+    web_container.hidden = true
+    capture_button.hidden = true
+    player_mobile.hidden = false
+
+    let counter_imgs = 0
 
     player_mobile.addEventListener('change', function(e) {
-      
+
         var file = e.target.files[0];
         // Do something with the video file.
         let img = new Image()
         img.src = URL.createObjectURL(file);
-        img.onload = function(){
-            if(selected_task.value == "register"){
+        img.onload = function() {
+            if (selected_task.value == "register") {
                 if (counter_context == 0) {
                     context.drawImage(this, 0, 0, canvas.width, canvas.height)
                     counter_context = counter_context + 1
@@ -65,18 +66,20 @@ if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
                     context1.clearRect(0, 0, canvas1.width, canvas1.height)
                     context2.clearRect(0, 0, canvas2.width, canvas2.height)
                     context3.clearRect(0, 0, canvas3.width, canvas3.height)
-        
+
                     face_to_register.disabled = true
                     this.innerHTML = gettext("Capture image")
                     return
                 }
                 counter_imgs = counter_imgs + 1
-            }else{
+            } else {
 
                 detection_context_aux.drawImage(this, 0, 0, detection_canvas_aux.width, detection_canvas_aux.height);
                 image = detection_canvas_aux.toDataURL(image_format);
 
-                $.post(DATA.URL_GET_DETECTIONS, {img: image})
+                $.post(DATA.URL_GET_DETECTIONS, {
+                        img: image
+                    })
                     .done(function(response) {
                         let img2 = new Image()
                         img2.src = response.img
@@ -84,21 +87,20 @@ if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
                             img2, 0, 0, detection_canvas.width, detection_canvas.height)
 
                         if (schedule_task) setTimeout(identifyFace, 500)
-                })
-                .fail((response, textStatus, error) => {
-                    console.log(response, textStatus, error)
-                })
-                    }
-            
+                    })
+                    .fail((response, textStatus, error) => {
+                        console.log(response, textStatus, error)
+                    })
+            }
+
         };
     });
-    
-}
-else{
+
+} else {
     console.log("Not Phone")
-    web_container.hidden=false
-    player_mobile.hidden=true
-    capture_button.hidden=false
+    web_container.hidden = false
+    player_mobile.hidden = true
+    capture_button.hidden = false
 }
 
 for (let i = 0; i < DATA.faces_registered.length; i++) {
@@ -181,7 +183,9 @@ const identifyFace = async () => {
     detection_context_aux.drawImage(player, 0, 0, detection_canvas_aux.width, detection_canvas_aux.height);
     image = detection_canvas_aux.toDataURL(image_format);
 
-    $.post(DATA.URL_GET_DETECTIONS, {img: image})
+    $.post(DATA.URL_GET_DETECTIONS, {
+            img: image
+        })
         .done(function(response) {
             let img = new Image()
             img.src = response.img
@@ -228,7 +232,7 @@ if (DATA.is_web_cam) {
                 })
         }
     }
-    
+
     capture_button.onclick = function(ev) {
         if (counter_context == 0) {
             context.drawImage(player, 0, 0, canvas.width, canvas.height)
@@ -296,7 +300,7 @@ if (DATA.is_web_cam) {
     //MANAGE VISIBILITY
     container_ip_cam.hidden = true
     container_web_cam.hidden = false
-    if(!is_mobile){
+    if (!is_mobile) {
         navigator.mediaDevices.getUserMedia(constraints)
             .then(stream => player.srcObject = stream)
             .catch(err => console.log(err))
@@ -312,7 +316,7 @@ if (DATA.is_web_cam) {
         }
         schedule_task = false
     } else if (selected_task.value == "detect") {
-        if(!is_mobile){
+        if (!is_mobile) {
             schedule_task = true
 
             setTimeout(identifyFace, 0)
@@ -334,8 +338,8 @@ if (DATA.is_web_cam) {
             }
             schedule_task = false
         } else if (this.value == "detect") {
-            if(!is_mobile){
-                schedule_task = true    
+            if (!is_mobile) {
+                schedule_task = true
                 setTimeout(identifyFace, 0)
             }
             detection_containter.hidden = false
