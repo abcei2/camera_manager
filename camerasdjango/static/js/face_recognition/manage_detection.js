@@ -36,7 +36,7 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
 
     player_mobile.addEventListener('change', function(e) {
 
-        var file = e.target.files[0];
+        let file = e.target.files[0];
         // Do something with the video file.
         let img = new Image()
         img.src = URL.createObjectURL(file);
@@ -97,7 +97,6 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
     });
 
 } else {
-    console.log("Not Phone")
     web_container.hidden = false
     player_mobile.hidden = true
     capture_button.hidden = false
@@ -119,7 +118,6 @@ faces_registered_list.onclick = function(event) {
 
     face_selection = $(target).index()
     face_name_selection = faces_registered_list.childNodes[face_selection + 1].textContent
-    console.log("saf", face_name_selection)
     faces_registered_list.childNodes[face_selection + 1].className = "list-group-item active"
     DATA_OUT_AUX = {
         'face_name': face_name_selection
@@ -128,9 +126,6 @@ faces_registered_list.onclick = function(event) {
         .done(function(response) {
             let counter_imgs = 0
             for (let i = 0; i < response.images.length; i++) {
-
-
-                //console.log(response.images[i])
                 let img = new Image(); // Create new img element
                 img.onload = function() {
                     if (counter_imgs == 0)
@@ -142,8 +137,7 @@ faces_registered_list.onclick = function(event) {
                     else if (counter_imgs == 3)
                         context3.drawImage(this, 0, 0, canvas3.width, canvas3.height);
                     counter_imgs = counter_imgs + 1
-
-                };
+                }
                 img.src = response.images[i]
             }
         })
@@ -183,23 +177,20 @@ const identifyFace = async () => {
     detection_context_aux.drawImage(player, 0, 0, detection_canvas_aux.width, detection_canvas_aux.height);
     image = detection_canvas_aux.toDataURL(image_format);
 
-    $.post(DATA.URL_GET_DETECTIONS, {
-            img: image
-        })
+    $.post(DATA.URL_GET_DETECTIONS, {img: image})
         .done(function(response) {
             let img = new Image()
             img.src = response.img
             img.onload = () => detection_context.drawImage(
                 img, 0, 0, detection_canvas.width, detection_canvas.height)
 
-            if (schedule_task) setTimeout(identifyFace, 500)
+            if (schedule_task) setTimeout(identifyFace, 0)
         })
         .fail((response, textStatus, error) => {
             console.log(response, textStatus, error)
         })
 
 }
-window.tify = identifyFace
 
 if (DATA.is_web_cam) {
 
@@ -207,9 +198,6 @@ if (DATA.is_web_cam) {
     let train_button = document.getElementById("train_button")
     train_button.onclick = function(ev) {
         $.getJSON(DATA.URL_UPDATE_FACE_MODEL)
-            .done(function(response) {
-                console.log(response)
-            })
             .fail(function(response, textStatus, error) {
                 console.log(response, textStatus, error)
             })
@@ -224,7 +212,6 @@ if (DATA.is_web_cam) {
 
             $.getJSON(DATA.URL_DELETE_FACES_IMAGES, DATA_OUT_AUX)
                 .done(function(response) {
-                    console.log(response)
                     faces_registered_list.removeChild(item_selected)
                 })
                 .fail(function(response, textStatus, error) {
@@ -268,7 +255,6 @@ if (DATA.is_web_cam) {
 
     let register_button = document.getElementById("register_button")
     register_button.onclick = function(ev) {
-        console.log(counter_context)
         if (counter_context == 4) {
             face_data = {
                 face_name: face_to_register.value,
@@ -281,9 +267,6 @@ if (DATA.is_web_cam) {
             }
 
             $.post(DATA.URL_ADD_NEW_FACE, face_data)
-                .done(function(response) {
-                    console.log("response", response)
-                })
                 .fail(function(response, textStatus, error) {
                     console.log(response, textStatus, error)
                 })
@@ -291,7 +274,6 @@ if (DATA.is_web_cam) {
             let listItem = document.createElement("li")
             listItem.className = "list-group-item list-group-item-dark"
             listItem.textContent = face_to_register.value
-            console.log(listItem)
             listItem.tabIndex = "1"
             faces_registered_list.appendChild(listItem)
         }
@@ -318,7 +300,6 @@ if (DATA.is_web_cam) {
     } else if (selected_task.value == "detect") {
         if (!is_mobile) {
             schedule_task = true
-
             setTimeout(identifyFace, 0)
         }
         register_button.hidden = true
@@ -371,9 +352,6 @@ if (DATA.is_web_cam) {
 
 
             $.getJSON(DATA.URL_EDIT, DATA)
-                .done(function(response) {
-                    console.log("response", response)
-                })
                 .fail(function(response, textStatus, error) {
                     console.log(response, textStatus, error)
                 })
