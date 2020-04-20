@@ -170,6 +170,7 @@ def get_detection(request):
     )
 
     if response.status_code not in [200, 201]:
+        bussy = False
         return JsonResponse(
             {'message': _("Couldn't extract face from image")},
             status=503
@@ -178,6 +179,7 @@ def get_detection(request):
     detections = response.json()
 
     if detections['message']['num_of_detections'] != 1:
+        bussy = False
         return JsonResponse(
             {'message': _("Couldn't detect exactly one face")},
             status=503
@@ -208,6 +210,7 @@ def get_detection(request):
     )
 
     if response.status_code not in [200, 201]:
+        bussy = False
         return JsonResponse(
             {'message': _("Failed to classify face :C")},
             status=503
