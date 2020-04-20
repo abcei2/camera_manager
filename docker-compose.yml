@@ -26,3 +26,5 @@ services:
     image: postgres:12-alpine
     volumes:
       - ./data/database:/var/lib/postgresql/data
+    env_file:
+      - ./env/secrets.env

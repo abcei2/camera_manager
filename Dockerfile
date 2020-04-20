@@ -27,4 +27,4 @@ COPY poetry.lock pyproject.toml /opt/app/
 
 RUN poetry install --no-dev
 
-CMD ["python", "camerasdjango/manage.py", "runserver"]
+CMD ["python", "camerasdjango/manage.py", "runserver", "0.0.0.0:8000"]
