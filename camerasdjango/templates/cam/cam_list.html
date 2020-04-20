@@ -7,7 +7,7 @@
 
 {% block main %}
 
-<a href="/cameras{% url 'cameras:new_camera' %}" class="px-3 py-2">
+<a href="{% url 'cameras:new_camera' %}" class="px-3 py-2">
 {% trans "Add camera" %}
 </a>
 
@@ -32,13 +32,13 @@
                 ">
             </div>
             <div>
-                <a href="/cameras{% url 'face_recognition:manage_detection' id_cam=cam.id %}" class="btn btn-outline-success">
+                <a href="{% url 'face_recognition:manage_detection' id_cam=cam.id %}" class="btn btn-outline-success">
                     {% trans "Manage" %}
                 </a>
-                <a href="/cameras{% url 'face_recognition:dashboard' id_cam=cam.id %}" class="btn btn-outline-info">
+                <a href="{% url 'face_recognition:dashboard' id_cam=cam.id %}" class="btn btn-outline-info">
                     {% trans "Dashboard" %}
                 </a>
-                <a href="/cameras/delete_camera/?id_cam={{ cam.id }}" style="float:right">
+                <a href="delete_camera/?id_cam={{ cam.id }}" style="float:right">
                     {% trans "Delete camera" %}
                 </a>
             </div>
