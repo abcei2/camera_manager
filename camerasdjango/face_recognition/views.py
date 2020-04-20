@@ -45,6 +45,7 @@ def manage_detection(request, id_cam):
     return render(request, 'face_recognition/manage_detection.html', context)
 
 
+@require_GET
 def update_faces_model(request):
     requests.get('https://ai.tucanoar.com/faces_classify/delete_images/')
 
@@ -68,7 +69,7 @@ def update_faces_model(request):
                 )
             }
             requests.post(
-                f'https://ai.tucanoar.com/faces_classify/register_face/',
+                'https://ai.tucanoar.com/faces_classify/register_face/',
                 files=files
             )
 
@@ -77,6 +78,7 @@ def update_faces_model(request):
     return JsonResponse({'message': _("Done")})
 
 
+@require_GET
 def delete_face_by_name(request):
     face_name = request.GET.get('face_name')
     Face.objects.filter(name=face_name).delete()
@@ -89,6 +91,7 @@ def delete_face_by_name(request):
     return JsonResponse({'message': _("Face deleted")}, safe=False)
 
 
+@require_GET
 def get_face_by_name(request):
     face_name = request.GET.get('face_name')
 
@@ -107,6 +110,7 @@ def get_face_by_name(request):
     return JsonResponse({'images': images}, safe=False)
 
 
+@require_POST
 def add_new_face(request):
     face_name = request.POST.get('face_name')
     images = request.POST.getlist('images[]', [])
@@ -121,7 +125,7 @@ def add_new_face(request):
         image_to_upload = cv2.imencode(".png", frame)[1]
 
         response = requests.post(
-            f'https://ai.tucanoar.com/faces/detect_faces/',
+            'https://ai.tucanoar.com/faces/detect_faces/',
             files={
                 'file': ('image.jpg', image_to_upload, 'multipart/form-data')
             }
@@ -165,7 +169,7 @@ def get_detection(request):
     frame_to_upload = cv2.imencode(".png", frame)[1]
 
     response = requests.post(
-        f'https://ai.tucanoar.com/faces/detect_faces/',
+        'https://ai.tucanoar.com/faces/detect_faces/',
         files={'file': ('image.jpg', frame_to_upload, 'multipart/form-data')}
     )
 
@@ -203,7 +207,7 @@ def get_detection(request):
         face_to_classify = cv2.imencode(".jpg", face_image)[1]
 
     response = requests.post(
-        f'https://ai.tucanoar.com/faces_classify/classify_faces/',
+        'https://ai.tucanoar.com/faces_classify/classify_faces/',
         files={
             'file': ('image.jpg', face_to_classify, 'multipart/form-data')
         }
@@ -232,6 +236,7 @@ def get_detection(request):
     return JsonResponse({'img': f"data:image/png;base64, {png_as_text}"})
 
 
+@require_GET
 def get_reports(request):
     face_reports = FaceRecognitionReport.objects.get(
         camera_id__exact=request.GET.get('cam_id'))
