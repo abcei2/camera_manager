@@ -14,6 +14,7 @@ services:
 
   django:
     build: .
+    command: bash -c "python manage.py migrate && python manage.py collectstatic --no-input && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./data/logs:/opt/app/data/logs
       - ./data/static:/opt/app/data/static
