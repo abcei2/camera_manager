@@ -10,7 +10,10 @@ from django.urls import reverse
 urlpatterns = [
     path(
         '',
-        RedirectView.as_view(url=reverse('cameras:manage_cameras'), name='home'
+        RedirectView.as_view(
+            url=reverse('cameras:manage_cameras'),
+            name='home'
+        )
     ),
     path(
         'cameras/',
@@ -34,6 +37,6 @@ if settings.DEBUG:
 
 if settings.ENABLE_DEBUG_TOOLBAR:
     import debug_toolbar
-    urlpatterns=[
+    urlpatterns = [
         path('__debug__/', include(debug_toolbar.urls)),
     ] + urlpatterns
