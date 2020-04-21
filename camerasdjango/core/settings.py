@@ -34,6 +34,7 @@ IS_MIGRATE = 'migrate' in sys.argv
 ENABLE_DEBUG_TOOLBAR = False
 
 ALLOWED_HOSTS = ["*"]
+FORCE_SCRIPT_NAME = '/cameras'
 JSON_DIR = os.path.join(BASE_DIR, 'json')
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 STATICFILES_DIR = os.path.join(BASE_DIR, 'static')
@@ -207,8 +208,8 @@ LOCALE_PATHS = (
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
+STATIC_URL = 'static/'
+MEDIA_URL = 'media/'
 
 # Debug toolbar
 if ENABLE_DEBUG_TOOLBAR:
