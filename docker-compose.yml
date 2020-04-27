@@ -19,6 +19,7 @@ services:
     volumes:
       - ./data/logs:/opt/app/data/logs
       - ./data/static:/opt/app/data/static
+      - ./data/media:/opt/app/data/media
       - ./env:/opt/app/env
       - ./camerasdjango:/opt/app/camerasdjango
     depends_on:
