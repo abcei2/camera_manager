@@ -5,6 +5,7 @@ services:
     image: nginx:alpine
     volumes:
       - ./etc/nginx/docker.nginx.conf:/etc/nginx/nginx.conf
+      - ./etc/nginx/snippets:/opt/app/etc/nginx/snippets
       - ./data/static:/opt/app/data/static
       - ./data/logs:/opt/syncroplicity.panacea/data/logs
     ports:
