@@ -133,15 +133,4 @@ map.on('click', function(e) {
     marker.setLngLat([e.lngLat.lng, e.lngLat.lat]).addTo(map)
     latitude_input.value = e.lngLat.lat.toString()
     longitude_input.value = e.lngLat.lng.toString()
-    $.ajax({
-        url: "http://192.75.71.26/mjpg/video.mjpg",
-        type: "GET",
-        success: function(result) {
-
-            console.log(result)
-        },
-        error: function(error) {
-            console.log(error)
-        }
-    })
 })
