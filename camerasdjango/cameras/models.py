@@ -7,12 +7,19 @@ from django.utils.translation import ugettext_lazy as _
 from decimal import Decimal
 
 
+from users.models import CustomUser
+
+
 DETECTOR_TYPES = (
     ('face_recogntion', _('Face recognition')),
 )
 
 
 class Camera(BaseModel):
+
+    #RELATION OF CAMERA TO USER
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
     detector_type = models.CharField(
         max_length=32,
         choices=DETECTOR_TYPES,

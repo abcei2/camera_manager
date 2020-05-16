@@ -34,7 +34,7 @@ IS_MIGRATE = 'migrate' in sys.argv
 ENABLE_DEBUG_TOOLBAR = False
 
 ALLOWED_HOSTS = ["*"]
-FORCE_SCRIPT_NAME = '/cameras'
+#FORCE_SCRIPT_NAME = '/cameras'
 JSON_DIR = os.path.join(BASE_DIR, 'json')
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 STATICFILES_DIR = os.path.join(BASE_DIR, 'static')
@@ -45,8 +45,8 @@ MEDIA_ROOT = os.path.join(DATA_DIR, 'media')
 # Don't change values here, only set these values in your env/secrets.env file
 POSTGRES_HOST = 'localhost'
 POSTGRES_PORT = 5432
-POSTGRES_DB = 'postgres'
-POSTGRES_USER = 'postgres'
+POSTGRES_DB = PLACEHOLDER_FOR_SECRET
+POSTGRES_USER = PLACEHOLDER_FOR_SECRET
 POSTGRES_PASSWORD = PLACEHOLDER_FOR_SECRET
 
 
@@ -103,6 +103,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_tables2',
 
     'django_extensions',
     'crispy_forms',
@@ -110,6 +111,7 @@ INSTALLED_APPS = [
     'core',
     'cameras',
     'face_recognition',
+    'users',
     'chartjs',
 ]
 
@@ -208,8 +210,11 @@ LOCALE_PATHS = (
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/cameras/static/'
-MEDIA_URL = '/cameras/media/'
+STATIC_URL = '/static/'
+MEDIA_URL = '/media/'
+AUTH_USER_MODEL='users.CustomUser'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/users/login/'
 
 # Debug toolbar
 if ENABLE_DEBUG_TOOLBAR:

@@ -1,0 +1,12 @@
+* PONER A FUNCIONAR EL DASHBOARD. MOSTRAR SOLO CONTEO DE LAS VECES Q SE DETECTA A CADA PERSONAJE.
+guardar alli: Ver modelo
+select * from face_recognition_facerecognitionreport ;
+ id | created | updated | camera_id | face_id 
+
+* Agregar usuarios.
+Crear tabla usuario_camera_id, para relacionar el usuario con la cámara a la que puede tener acceso
+
+
+* Show user_managment if user is staff.
+
+* Add relation of user in cameras model

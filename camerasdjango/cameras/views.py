@@ -6,6 +6,8 @@ from django.urls import reverse
 
 from core.view_utils import BaseView
 from cameras.models import Camera
+from users.models import CustomUser
+
 
 
 def delete_camera(request):
@@ -20,8 +22,12 @@ def create_new_camera(request):
     url = request.GET.get('url')
     geopoint = request.GET.get('geopoint')
     detector_type = request.GET.get('detector_type')
+    user_id = request.GET.get('user_id')
+
+    
+    user = CustomUser.objects.get(id=user_id)
     new_cam = Camera(url=url, geopoint=geopoint,
-                     detector_type=detector_type, web_cam=web_cam)
+                     detector_type=detector_type, web_cam=web_cam,user=user)
     new_cam.save()
 
     CAM_DATA = {
@@ -66,6 +72,7 @@ def get_camera_position(request):
 class CamListView(ListView):
     model = Camera
     template_name = 'cam/cam_list.html'
+    
 
 
 class CamCreateView(BaseView):

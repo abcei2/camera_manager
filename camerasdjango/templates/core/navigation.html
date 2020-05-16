@@ -32,9 +32,19 @@
                     <a class="dropdown-item" href="/admin/">
                         <i class="fa fa-fw fa-toolbox"></i>&nbsp;{% trans "Admin Interface" %}
                     </a>
-                    <a class="dropdown-item text-danger" href="#">
-                        <i class="fa fa-fw fa-sign-out-alt"></i>&nbsp;{% trans "Logout" %}
+                    <a id="logout_action" class="dropdown-item text-danger" href="#">
+                        <i  class="fa fa-fw fa-sign-out-alt"></i>&nbsp;{% trans "Logout" %}
                     </a>
+                    
+
+                    <script>
+                        let logout_action=document.getElementById("logout_action")
+                        logout_action.onclick=function(){
+                            window.location.replace("{% url 'users:logout' %}")
+                            
+
+                        }
+                    </script>
                 </div>
             </li>
         </ul>
