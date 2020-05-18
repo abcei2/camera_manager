@@ -17,6 +17,9 @@ from chartjs.views.lines import BaseLineChartView
 from core.utils import frame_from_b64image
 from face_recognition.models import FaceRecognitionReport, Face
 from cameras.models import Camera
+from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
+
 
 register_face_service_url="https://ai.tucanoar.com/faces_classify/delete_images/"
 update_model_service_url="https://ai.tucanoar.com/faces_classify/update_model/"
@@ -24,6 +27,9 @@ delete_images_service_url="https://ai.tucanoar.com/faces_classify/delete_images/
 detect_faces_service_url="https://ai.tucanoar.com/faces/detect_faces/"
 classify_faces_service_url="https://ai.tucanoar.com/faces_classify/classify_faces/"
 
+
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 @require_GET
 def manage_detection(request, id_cam):
     faces = Face.objects.values_list('name', flat=True)
@@ -50,8 +56,10 @@ def manage_detection(request, id_cam):
     return render(request, 'face_recognition/manage_detection.html', context)
 
 
+
 @require_GET
 def update_faces_model(request):
+    print("asdasd")
     requests.get(delete_images_service_url)
 
     folder_url = settings.FACES_DIR
@@ -77,12 +85,16 @@ def update_faces_model(request):
                 register_face_service_url,
                 files=files
             )
+        
+        print(files)
 
     requests.get(update_model_service_url)
-
+    print("UPDATING FACE MODEL")
     return JsonResponse({'message': _("Done")})
 
 
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 @require_GET
 def delete_face_by_name(request):
     face_name = request.GET.get('face_name')
@@ -96,6 +108,8 @@ def delete_face_by_name(request):
     return JsonResponse({'message': _("Face deleted")}, safe=False)
 
 
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 @require_GET
 def get_face_by_name(request):
     face_name = request.GET.get('face_name')
@@ -115,6 +129,8 @@ def get_face_by_name(request):
     return JsonResponse({'images': images}, safe=False)
 
 
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 @require_POST
 def add_new_face(request):
     face_name = request.POST.get('face_name')
@@ -159,6 +175,8 @@ def add_new_face(request):
 bussy = False
 
 
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 @require_POST
 def get_detection(request):
     global bussy
@@ -241,8 +259,11 @@ def get_detection(request):
     return JsonResponse({'img': f"data:image/png;base64, {png_as_text}"})
 
 
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 @require_GET
 def get_reports(request):
+    ask_if_user_login(request)
     face_reports = FaceRecognitionReport.objects.get(
         camera_id__exact=request.GET.get('cam_id'))
 

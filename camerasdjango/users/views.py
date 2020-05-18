@@ -5,7 +5,15 @@ from django.views.generic import ListView
 from .models import CustomUser
 from django.shortcuts import render
 from django_tables2 import RequestConfig,tables
+from django.contrib.auth.views import SuccessURLAllowedHostsMixin
+from django.views.generic.edit import FormView
 
+from django.conf import settings
+from django.contrib.auth.forms import (
+    AuthenticationForm
+)
+from django.shortcuts import resolve_url
+from users.forms import CustomAuthenticationForm 
 
 
 
@@ -23,8 +31,7 @@ class UsersTable(tables.Table):
         exclude = ['password','is_superuser','id','email','is_staff','edad']
         sequence=['username','first_name','last_name','cargo','is_active','...']
        
-        
-
+    
 def UserManagementView(request):
     table = UsersTable(CustomUser.objects.all())
  

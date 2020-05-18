@@ -213,7 +213,7 @@ LOCALE_PATHS = (
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 AUTH_USER_MODEL='users.CustomUser'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/cameras/manage_cameras/'
 LOGOUT_REDIRECT_URL = '/users/login/'
 
 # Debug toolbar

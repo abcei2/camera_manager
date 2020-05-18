@@ -2,6 +2,10 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm,AuthenticationForm, UsernameField
 from .models import CustomUser
 from django.contrib.auth import authenticate, get_user_model, password_validation
+
+from django.contrib.sessions.models import Session
+
+
 class CustomUserCreationForm(UserCreationForm):
 
 	class Meta(UserCreationForm.Meta):
@@ -46,4 +50,29 @@ class CustomUserChangeForm(UserChangeForm):
 class CustomAuthenticationForm(AuthenticationForm):
 	username = forms.CharField(label=("Usuario"),max_length=254)
 	password = forms.CharField(label=("Contraseña"), widget=forms.PasswordInput)
-    
+	def confirm_login_allowed(self, user):
+		'''
+		Controls whether the given User may log in. This is a policy setting,
+		independent of end-user authentication. This default behavior is to
+		allow login by active users, and reject login by inactive users.
+
+		If the given user cannot log in, this method should raise a
+		``forms.ValidationError``.
+
+		If the given user may log in, this method should return None.
+		'''
+		for objs in Session.objects.all():
+			print(objs.session_data)
+			uid = objs.get_decoded().get('_auth_user_id')
+			if(int(uid)==user.id):
+				objs.delete()
+				
+		if not user.is_active:
+			raise forms.ValidationError(
+				self.error_messages['inactive'],
+				code='inactive',
+			)
+		else:
+			print("PENDEJETE")
+				
+

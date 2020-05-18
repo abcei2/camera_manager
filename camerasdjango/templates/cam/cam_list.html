@@ -6,11 +6,11 @@
 {% block title %}Home{% endblock title %}
 
 {% block main %}
-
 <a href="{% url 'cameras:new_camera' %}" class="px-3 py-2">
 {% trans "Add camera" %}
 </a>
 <div class="row d-flex px-3">
+    {{ sessions  }}
     {% for cam in object_list %}
         {% if cam.user == request.user %}
             <div class="card m-2" style="width:400px; min-width:400px">

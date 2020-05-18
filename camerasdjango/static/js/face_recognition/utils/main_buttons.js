@@ -1,6 +1,7 @@
 /// BUTTONS ZONE
 let train_button = document.getElementById("train_button")
 train_button.onclick = function(ev) {
+    console.log(DATA.URL_UPDATE_FACE_MODEL)
     $.getJSON(DATA.URL_UPDATE_FACE_MODEL)
         .fail(function(response, textStatus, error) {
             console.log(response, textStatus, error)
