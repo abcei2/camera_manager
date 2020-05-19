@@ -3,7 +3,7 @@ from django.urls import path
 from face_recognition.views import (
     manage_detection, get_reports, LineChartJSONView, dashboard,
     get_detection, add_new_face, get_face_by_name, delete_face_by_name,
-    update_faces_model
+    update_faces_model, free_detector
 )
 
 
@@ -25,4 +25,8 @@ urlpatterns = [
 
     path('delete_face_by_name/', delete_face_by_name,
          {}, name='delete_face_by_name'),
+
+
+    path('free_detector/', free_detector,
+         {}, name='free_detector'),
 ]

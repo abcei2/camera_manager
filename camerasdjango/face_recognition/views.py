@@ -10,6 +10,8 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.urls import reverse
 from django.views.decorators.http import require_POST, require_GET
+from django.views.decorators.csrf import csrf_protect
+
 from django.utils.translation import ugettext_lazy as _
 
 from chartjs.views.lines import BaseLineChartView
@@ -27,11 +29,23 @@ delete_images_service_url="https://ai.tucanoar.com/faces_classify/delete_images/
 detect_faces_service_url="https://ai.tucanoar.com/faces/detect_faces/"
 classify_faces_service_url="https://ai.tucanoar.com/faces_classify/classify_faces/"
 
-
+# global detecting, counter_tabs
+# counter_tabs=0
+# detecting=False
 @login_required(login_url=settings.LOGOUT_REDIRECT_URL,
 redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 @require_GET
 def manage_detection(request, id_cam):
+    
+    # if request.session.get('bussy', False):
+    #     request.session["bussy"].append(request.user.id)
+    #     request.session["bussy2"].append(counter_tabs)
+    #     print(request.session.get('bussy', False))
+    #     print(request.session.get('bussy2', False))
+    # else:
+    #     request.session["bussy"]=[request.user.id]
+    #     request.session["bussy2"]=[counter_tabs]
+        
     faces = Face.objects.values_list('name', flat=True)
     camera = Camera.objects.get(id=id_cam)
 
@@ -41,6 +55,7 @@ def manage_detection(request, id_cam):
             'is_web_cam': camera.web_cam,
             'faces_registered': list(faces),
 
+            'URL_FREE_DETECTOR':reverse('face_recognition:free_detector'),
             'URL_EDIT': reverse('cameras:edit_url_camera'),
             'URL_GET_DETECTIONS': reverse('face_recognition:get_detection'),
             'URL_ADD_NEW_FACE': reverse('face_recognition:add_new_face'),
@@ -56,10 +71,17 @@ def manage_detection(request, id_cam):
     return render(request, 'face_recognition/manage_detection.html', context)
 
 
+@csrf_protect
+@require_POST
+def free_detector(request):
+    print("FREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
 
+    return JsonResponse({'message': _("Done")})
+
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 @require_GET
 def update_faces_model(request):
-    print("asdasd")
     requests.get(delete_images_service_url)
 
     folder_url = settings.FACES_DIR
@@ -179,9 +201,17 @@ bussy = False
 redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 @require_POST
 def get_detection(request):
+    
+    
+    
+    
     global bussy
+
+
+
     if bussy:
         return JsonResponse({'message': _("Detector busy")}, status=503)
+    
 
     bussy = True
 

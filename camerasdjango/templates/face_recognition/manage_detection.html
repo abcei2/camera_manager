@@ -11,8 +11,8 @@
 
     <div class="row py-2">
         <select id="selected_task" class="form-control form-control-lg">
-            <option value="register" selected="selected">{% trans "Register face" %}</option>
-            <option value="detect" >{% trans "Identify face" %}</option>
+            <option value="register" >{% trans "Register face" %}</option>
+            <option value="detect" selected="selected">{% trans "Identify face" %}</option>
         </select>
     </div>
 
@@ -141,15 +141,12 @@
     </div>
 </div>
 
+{{ data|json_script:"data" }}
+<script src="{% static 'js/face_recognition/manage_detection.js' %}"></script>
 {% endblock %}
 
 {% block bodyafter %}
 
-{{ data|json_script:"data" }}
-<script>
-    console.log("{% static 'js/face_recognition/manage_detection.js' %}")
-</script>
-<script src="{% static 'js/face_recognition/manage_detection.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
 
 {% endblock %}
