@@ -22,8 +22,9 @@ from cameras.models import Camera
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 
+from django.db.models import Count
 
-register_face_service_url="https://ai.tucanoar.com/faces_classify/delete_images/"
+register_face_service_url="https://ai.tucanoar.com/faces_classify/register_face/"
 update_model_service_url="https://ai.tucanoar.com/faces_classify/update_model/"
 delete_images_service_url="https://ai.tucanoar.com/faces_classify/delete_images/"
 detect_faces_service_url="https://ai.tucanoar.com/faces/detect_faces/"
@@ -51,6 +52,7 @@ def manage_detection(request, id_cam):
 
     context = {
         'data': {
+            'id_cam': id_cam,
             'url': camera.url,
             'is_web_cam': camera.web_cam,
             'faces_registered': list(faces),
@@ -204,7 +206,9 @@ def get_detection(request):
     
     
     
-    
+    img = request.POST.get('img')
+    id_cam=request.POST.get('id_cam')
+
     global bussy
 
 
@@ -214,8 +218,6 @@ def get_detection(request):
     
 
     bussy = True
-
-    img = request.POST.get('img')
 
     frame = frame_from_b64image(img.split(';base64,')[1])
     frame_not_draw = frame.copy()
@@ -285,6 +287,14 @@ def get_detection(request):
     the_png = cv2.imencode('.png', frame)[1]
     png_as_text = base64.b64encode(the_png).decode("utf-8")
 
+    print(id_cam)
+
+    camera = Camera(id=id_cam)
+    face_id = Face.objects.filter(name=classifications['message']['face_detect']).values()[0]['id']
+    faceObj = Face(id=face_id)
+    face_reports = FaceRecognitionReport(camera=camera, face=faceObj)
+    face_reports.save()
+   
     bussy = False
     return JsonResponse({'img': f"data:image/png;base64, {png_as_text}"})
 
@@ -293,31 +303,23 @@ def get_detection(request):
 redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 @require_GET
 def get_reports(request):
-    ask_if_user_login(request)
     face_reports = FaceRecognitionReport.objects.get(
         camera_id__exact=request.GET.get('cam_id'))
 
     return face_reports
 
 
-class LineChartJSONView(BaseLineChartView):
-    def get_labels(self):
-        """Return 7 labels for the x-axis."""
-        return ["January", "February", "March", "April", "May", "June", "July"]
-
-    def get_providers(self):
-        """Return names of datasets."""
-        return ["Central", "Eastside", "Westside"]
-
-    def get_data(self):
-        """Return 3 datasets to plot."""
-
-        return [[75, 44, 92, 11, 44, 95, 35],
-                [41, 92, 18, 3, 73, 87, 92],
-                [87, 21, 94, 3, 90, 13, 65]]
-
-
 def dashboard(request, id_cam):
-    # context = {"categories": categories, 'values': values}
-    # print(context)
-    return render(request, 'face_recognition/dashboard.html', context={})
+    face_reports = FaceRecognitionReport.objects.values('face_id').annotate(total=Count('face_id'))
+
+    values = []
+    categories = []
+    print(face_reports)
+
+    for i in face_reports:
+        values.append(i['total'])
+        face_name=Face.objects.filter(id=i['face_id']).values("name")[0]["name"]
+        categories.append(face_name)
+    
+    context = {"categories": categories, 'values': values}
+    return render(request, 'face_recognition/dashboard.html', context=context)
