@@ -18,7 +18,7 @@ DETECTOR_TYPES = (
 class Camera(BaseModel):
 
     #RELATION OF CAMERA TO USER
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
 
     detector_type = models.CharField(
         max_length=32,
