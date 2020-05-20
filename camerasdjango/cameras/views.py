@@ -8,6 +8,7 @@ from core.view_utils import BaseView
 from cameras.models import Camera
 from users.models import CustomUser
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 
@@ -78,19 +79,20 @@ def get_camera_position(request):
     return JsonResponse({'cameras': all_cams}, safe=False)
 
 
-@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
-redirect_field_name=settings.LOGOUT_REDIRECT_URL)
-class CamListView(ListView):
+class CamListView(LoginRequiredMixin,ListView):
     model = Camera
     template_name = 'cam/cam_list.html'
+
+    login_url = settings.LOGOUT_REDIRECT_URL
+    redirect_field_name = settings.LOGOUT_REDIRECT_URL
     
 
 
-@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
-redirect_field_name=settings.LOGOUT_REDIRECT_URL)
-class CamCreateView(BaseView):
+class CamCreateView(LoginRequiredMixin, BaseView):
     template = 'cam/cam_add.html'
 
+    login_url = settings.LOGOUT_REDIRECT_URL
+    redirect_field_name = settings.LOGOUT_REDIRECT_URL
     def get(self, request):
         return self.render_template(request, {'data': {
             "MAP_API": settings.MAP_API,
