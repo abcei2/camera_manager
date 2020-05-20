@@ -107,6 +107,20 @@ six = ">=1.2"
 
 [[package]]
 category = "main"
+description = "Table/data-grid framework for Django"
+name = "django-tables2"
+optional = false
+python-versions = "*"
+version = "2.3.1"
+
+[package.dependencies]
+Django = ">=1.11"
+
+[package.extras]
+tablib = ["tablib"]
+
+[[package]]
+category = "main"
 description = "The geodesic routines from GeographicLib"
 name = "geographiclib"
 optional = false
@@ -403,7 +417,7 @@ python-versions = "*"
 version = "0.1.9"
 
 [metadata]
-content-hash = "de828ce6551d2704f618295e1fce689bc4475c69672862ee5ea5cb9f1e8cf036"
+content-hash = "e01d4d0c48649f4bc2c32e0a6fe996e269ae63b3235a18232ff561a7701eb529"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -450,6 +464,10 @@ django-crispy-forms = [
 django-extensions = [
     {file = "django-extensions-2.2.9.tar.gz", hash = "sha256:2f81b618ba4d1b0e58603e25012e5c74f88a4b706e0022a3b21f24f0322a6ce6"},
     {file = "django_extensions-2.2.9-py2.py3-none-any.whl", hash = "sha256:b19182d101a441fe001c5753553a901e2ef3ff60e8fbbe38881eb4a61fdd17c4"},
+]
+django-tables2 = [
+    {file = "django-tables2-2.3.1.tar.gz", hash = "sha256:28da782f81f046c7d921246f43e7ba2df430cafe5a0e00a0f9dadef25a0e487d"},
+    {file = "django_tables2-2.3.1-py2.py3-none-any.whl", hash = "sha256:7e425ad51e22caf5470351981f0fcd4fd35d4cf2d4c3b76fa1b7bf56251778d1"},
 ]
 geographiclib = [
     {file = "geographiclib-1.50-py3-none-any.whl", hash = "sha256:51cfa698e7183792bce27d8fb63ac8e83689cd8170a730bf35e1a5c5bf8849b9"},
