@@ -309,6 +309,8 @@ def get_reports(request):
     return face_reports
 
 
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 def dashboard(request, id_cam):
     face_reports = FaceRecognitionReport.objects.values('face_id').annotate(total=Count('face_id'))
 

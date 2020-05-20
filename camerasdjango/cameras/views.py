@@ -7,9 +7,12 @@ from django.urls import reverse
 from core.view_utils import BaseView
 from cameras.models import Camera
 from users.models import CustomUser
+from django.contrib.auth.decorators import login_required
 
 
 
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 def delete_camera(request):
     if request.method == 'GET':
         id_cam = request.GET.get('id_cam')
@@ -17,6 +20,8 @@ def delete_camera(request):
         return render(request, 'cam/cam_list.html', {'data': 'data'})
 
 
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 def create_new_camera(request):
     web_cam = request.GET.get('web_cam')
     url = request.GET.get('url')
@@ -37,6 +42,8 @@ def create_new_camera(request):
     return JsonResponse(CAM_DATA, safe=False)
 
 
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 def edit_url_camera(request):
     url = request.GET.get('url')
     id_cam = request.GET.get('id_cam')
@@ -54,6 +61,8 @@ def edit_url_camera(request):
     return JsonResponse(CAM_DATA, safe=False)
 
 
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 def get_camera_position(request):
     all_cams = []
 
@@ -69,12 +78,16 @@ def get_camera_position(request):
     return JsonResponse({'cameras': all_cams}, safe=False)
 
 
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 class CamListView(ListView):
     model = Camera
     template_name = 'cam/cam_list.html'
     
 
 
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 class CamCreateView(BaseView):
     template = 'cam/cam_add.html'
 
