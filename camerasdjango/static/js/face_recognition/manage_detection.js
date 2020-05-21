@@ -78,21 +78,6 @@ document.writeln("<script type='text/javascript' src='../static/js/face_recognit
 
 
 const identifyFace = async () => {
-    detection_context_aux.drawImage(player, 0, 0, detection_canvas_aux.width, detection_canvas_aux.height);
-    image = detection_canvas_aux.toDataURL(image_format);
-
-    $.post(DATA.URL_GET_DETECTIONS, {id_cam:DATA.id_cam, img: image})
-        .done(function(response) {
-            let img = new Image()
-            img.src = response.img
-            img.onload = () => detection_context.drawImage(
-                img, 0, 0, detection_canvas.width, detection_canvas.height)
-
-            if (schedule_task) setTimeout(identifyFace, 0)
-        })
-        .fail((response, textStatus, error) => {
-            console.log(response, textStatus, error)
-        })
-
+    
 }
 
