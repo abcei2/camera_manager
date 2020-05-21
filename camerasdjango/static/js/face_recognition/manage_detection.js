@@ -77,7 +77,7 @@ if (DATA.is_web_cam) {
 document.writeln("<script type='text/javascript' src='../static/js/face_recognition/utils/select_task.js'></script>");
 
 
-const identifyFace = async () => {
+// const identifyFace = async () => {
     
-}
+// }
 

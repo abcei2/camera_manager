@@ -5,7 +5,7 @@ if (selected_task.value == "register") {
     register_button.hidden = false
     detection_containter.hidden = true
     register_containter.hidden = false
-    capture_button.disabled = false
+    capture_button.innerHTML="Capture"
     if (counter_context == 4) {
         face_to_register.disabled = false
     }
@@ -15,7 +15,7 @@ if (selected_task.value == "register") {
     register_button.hidden = true
     detection_containter.hidden = false
     register_containter.hidden = true
-    capture_button.disabled = true
+    capture_button.innerHTML="Detect"
     face_to_register.disabled = true
 }
 

@@ -287,13 +287,20 @@ def get_detection(request):
     the_png = cv2.imencode('.png', frame)[1]
     png_as_text = base64.b64encode(the_png).decode("utf-8")
 
-    print(id_cam)
+    print(classifications['message']['face_detect'])
 
     camera = Camera(id=id_cam)
-    face_id = Face.objects.filter(name=classifications['message']['face_detect']).values()[0]['id']
-    faceObj = Face(id=face_id)
-    face_reports = FaceRecognitionReport(camera=camera, face=faceObj)
-    face_reports.save()
+    face_id = Face.objects.filter(name=classifications['message']['face_detect']).values()
+    print(face_id.values())
+    if(face_id.values()):
+        face_id=face_id[0]['id']
+        print(face_id)
+        faceObj = Face(id=face_id)
+        face_reports = FaceRecognitionReport(camera=camera, face=faceObj)
+        face_reports.save()
+    else:
+        print("PRINT SUPER NULL")
+    
    
     bussy = False
     return JsonResponse({'img': f"data:image/png;base64, {png_as_text}"})

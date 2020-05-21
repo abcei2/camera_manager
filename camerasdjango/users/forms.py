@@ -62,10 +62,12 @@ class CustomAuthenticationForm(AuthenticationForm):
 		If the given user may log in, this method should return None.
 		'''
 		for objs in Session.objects.all():
-			print(objs.session_data)
+			#print(objs.session_data)
 			uid = objs.get_decoded().get('_auth_user_id')
-			if(int(uid)==user.id):
-				objs.delete()
+			print(uid)
+			if(uid):
+				if(int(uid)==user.id):
+					objs.delete()
 				
 		if not user.is_active:
 			raise forms.ValidationError(
