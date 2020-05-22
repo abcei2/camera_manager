@@ -36,11 +36,11 @@ class Camera(BaseModel):
     # def coords(self):
     #     return list(map(lambda x: Decimal(x), self.geopoint.split(',')))
 
-    @cached_property
-    def latlon_geopoint(self):
-        gpoint = self.coords
-        gpoint.reverse()
-        return ','.join([str(gp) for gp in gpoint])
+    # @cached_property
+    # def latlon_geopoint(self):
+    #     gpoint = self.coords
+    #     gpoint.reverse()
+    #     return ','.join([str(gp) for gp in gpoint])
 
     @cached_property
     def last_frame(self):
