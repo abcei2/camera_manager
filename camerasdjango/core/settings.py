@@ -34,8 +34,8 @@ IS_MIGRATE = 'migrate' in sys.argv
 ENABLE_DEBUG_TOOLBAR = False
 
 ALLOWED_HOSTS = ["*"]
-# USE_X_FORWARDED_HOST = True
-# FORCE_SCRIPT_NAME = '/cameras/'
+USE_X_FORWARDED_HOST = True
+FORCE_SCRIPT_NAME = '/cameras/'
 JSON_DIR = os.path.join(BASE_DIR, 'json')
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 STATICFILES_DIR = os.path.join(BASE_DIR, 'static')
