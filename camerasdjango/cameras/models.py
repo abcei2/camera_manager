@@ -32,9 +32,9 @@ class Camera(BaseModel):
     is_active = models.BooleanField(default=True)
     web_cam = models.BooleanField(default=False)
 
-    @cached_property
-    def coords(self):
-        return list(map(lambda x: Decimal(x), self.geopoint.split(',')))
+    # @cached_property
+    # def coords(self):
+    #     return list(map(lambda x: Decimal(x), self.geopoint.split(',')))
 
     @cached_property
     def latlon_geopoint(self):
