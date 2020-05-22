@@ -62,7 +62,6 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
                         img2.onload = () => detection_context.drawImage(
                             img2, 0, 0, detection_canvas.width, detection_canvas.height)
 
-                        if (schedule_task) setTimeout(identifyFace, 500)
                     })
                     .fail((response, textStatus, error) => {
                         console.log(response, textStatus, error)
