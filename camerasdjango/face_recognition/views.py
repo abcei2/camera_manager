@@ -297,8 +297,8 @@ def get_detection(request):
     if(face_id.values()):
         face_id=face_id[0]['id']
         print(face_id)
-        faceObj = Face(id=face_id)
-        camera1 = Camera(id=id_cam)
+        faceObj = Face.objects.create(id=face_id)
+        camera1 = Camera.objects.create(id=id_cam)
         face_reports = FaceRecognitionReport(camera=camera1, face=faceObj)
         face_reports.save()
     else:
