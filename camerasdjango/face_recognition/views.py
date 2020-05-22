@@ -22,6 +22,8 @@ from cameras.models import Camera
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 
+# from django.views.decorators.csrf import csrf_exempt
+
 from django.db.models import Count
 
 register_face_service_url="https://ai.tucanoar.com/faces_classify/register_face/"
@@ -33,6 +35,8 @@ classify_faces_service_url="https://ai.tucanoar.com/faces_classify/classify_face
 # global detecting, counter_tabs
 # counter_tabs=0
 # detecting=False
+
+@csrf_protect
 @login_required(login_url=settings.LOGOUT_REDIRECT_URL,
 redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 @require_GET
@@ -289,14 +293,13 @@ def get_detection(request):
 
     print(classifications['message']['face_detect'])
 
-    camera = Camera(id=id_cam)
     face_id = Face.objects.filter(name=classifications['message']['face_detect']).values()
-    print(face_id.values())
     if(face_id.values()):
         face_id=face_id[0]['id']
         print(face_id)
         faceObj = Face(id=face_id)
-        face_reports = FaceRecognitionReport(camera=camera, face=faceObj)
+        camera1 = Camera(id=id_cam)
+        face_reports = FaceRecognitionReport(camera=camera1, face=faceObj)
         face_reports.save()
     else:
         print("PRINT SUPER NULL")
