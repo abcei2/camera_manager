@@ -54,6 +54,7 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
                 image = detection_canvas_aux.toDataURL(image_format);
 
                 $.post(DATA.URL_GET_DETECTIONS, {
+                        id_cam:DATA.id_cam,
                         img: image
                     })
                     .done(function(response) {
