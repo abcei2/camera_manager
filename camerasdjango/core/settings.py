@@ -211,18 +211,18 @@ LOCALE_PATHS = (
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
-STATIC_URL = '/static/'
-MEDIA_URL = '/media/'
-AUTH_USER_MODEL='users.CustomUser'
-LOGIN_REDIRECT_URL = '/cameras/manage_cameras/'
-LOGOUT_REDIRECT_URL = '/users/login/'
-
-
-# STATIC_URL = '/cameras/static/'
-# MEDIA_URL = '/cameras/media/'
+# STATIC_URL = '/static/'
+# MEDIA_URL = '/media/'
 # AUTH_USER_MODEL='users.CustomUser'
-# LOGIN_REDIRECT_URL = '/cameras/cameras/manage_cameras/'
-# LOGOUT_REDIRECT_URL = '/cameras/users/login/'
+# LOGIN_REDIRECT_URL = '/cameras/manage_cameras/'
+# LOGOUT_REDIRECT_URL = '/users/login/'
+
+
+STATIC_URL = '/cameras/static/'
+MEDIA_URL = '/cameras/media/'
+AUTH_USER_MODEL='users.CustomUser'
+LOGIN_REDIRECT_URL = '/cameras/cameras/manage_cameras/'
+LOGOUT_REDIRECT_URL = '/cameras/users/login/'
 
 
 # Debug toolbar
