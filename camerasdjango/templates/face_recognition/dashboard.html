@@ -3,15 +3,24 @@
 {% block main %}
 
 <div class="container-fluid">
+
+    <div id="container" class="row"></div>
     <div class="row">
             <!-- Highcharts display -->
-            <div class="border" id="container" style="width: 800px; height: 400px; margin: 0 auto"></div>
 
+            <button id="column" style="margin-left: 2em" class="btn btn-primary">Column</button>
+            <button id="line" class="btn btn-primary">Line</button>
+            <button id="spline" class="btn btn-primary">Spline</button>
+            <button id="area" class="btn btn-primary">Area</button>
+            <button id="areaspline" class="btn btn-primary">Areaspline</button>
+            <button id="scatter" class="btn btn-primary">Scatter</button>
+            <button id="pie" class="btn btn-primary">Pie</button>
          
-            </main>
+            
     </div>
 </div>
 
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
 <!-- Chartjs libraries -->
 <script src="https://code.highcharts.com/highcharts.js"></script>
 <script src="https://code.highcharts.com/modules/exporting.js"></script>
@@ -21,56 +30,79 @@
     _categories = {{ categories | safe }};
     _values = {{ values | safe }};
 
-    Highcharts.chart('container', {
-        chart: {
-            type: 'column'
-        },
-        title: {
-            text: 'People in your bussiness history (Last Week)'
-        },
-        subtitle: {
-            text: ')'
-        },
-        xAxis: {
-            categories: _categories,
-            crosshair: true
-        },
-        yAxis: {
-            min: 0,
-            title: {
-                text: 'Ammount of people'
-            }
-        },
-        tooltip: {
-            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                '<td style="padding:0"><b>{point.y:.1f} </b></td></tr>',
-            footerFormat: '</table>',
-            shared: true,
-            useHTML: true
-        },
-        plotOptions: {
-            column: {
-                pointPadding: 0.2,
-                borderWidth: 0
-            }
-        },
-        series: [{
-            name: 'Count',
-            data: _values
 
-        }]
+    data=[]
+    if(_categories.length>1){
+
+        for (var i = 0; i < _categories.length-1; i++) {
+            console.log(_categories[i],_values[i]);
+            data.push([_categories[i],_values[i]])
+        }
+        data.push({
+            name: _categories[_categories.length-1],
+            y:  _values[_categories.length-1],
+            selected: true,
+            sliced: true
+        })
+    }else{
+        data.push({
+            name: _categories[_categories.length-1],
+            y:  _values[_categories.length-1],
+            selected: true,
+            sliced: true
+        })
+    }
+    console.log(data)
+    
+    $(function () {
+        $('#container').highcharts({
+            xAxis: {
+                categories: _categories,
+                showEmpty: false
+            },
+
+            yAxis: {
+                showEmpty: false
+            },
+            
+            series: [{
+                allowPointSelect: true,
+                data: data,
+                marker: {
+                    enabled: false
+                },
+                events:
+                {
+                    click: function(event)
+                    {
+                        
+                            var selected = this.index;
+                            var allSeries = this.chart.series;
+                            
+                            console.log(event.point.name)
+                            return false;
+                    }
+                },
+                showInLegend: true
+            }]
+        });
+
+        var chart = $('#container').highcharts(),
+            name = false,
+            enableDataLabels = true,
+            enableMarkers = true,
+            color = false;
+        
+        // Set type
+        $.each(['line', 'column', 'spline', 'area', 'areaspline', 'scatter', 'pie'], function (i, type) {
+            $('#' + type).click(function () {
+                chart.series[0].update({
+                    type: type
+                });
+            });
+        });
     });
 </script>
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-    crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
-    integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
-    crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
-    integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
-    crossorigin="anonymous"></script>
-
+  
 {% endblock %}

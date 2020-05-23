@@ -6,8 +6,14 @@ from django.urls import reverse
 
 from core.view_utils import BaseView
 from cameras.models import Camera
+from users.models import CustomUser
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
+
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 def delete_camera(request):
     if request.method == 'GET':
         id_cam = request.GET.get('id_cam')
@@ -15,13 +21,19 @@ def delete_camera(request):
         return render(request, 'cam/cam_list.html', {'data': 'data'})
 
 
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 def create_new_camera(request):
     web_cam = request.GET.get('web_cam')
     url = request.GET.get('url')
     geopoint = request.GET.get('geopoint')
     detector_type = request.GET.get('detector_type')
+    user_id = request.GET.get('user_id')
+
+    
+    user = CustomUser.objects.get(id=user_id)
     new_cam = Camera(url=url, geopoint=geopoint,
-                     detector_type=detector_type, web_cam=web_cam)
+                     detector_type=detector_type, web_cam=web_cam,user=user)
     new_cam.save()
 
     CAM_DATA = {
@@ -31,6 +43,8 @@ def create_new_camera(request):
     return JsonResponse(CAM_DATA, safe=False)
 
 
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 def edit_url_camera(request):
     url = request.GET.get('url')
     id_cam = request.GET.get('id_cam')
@@ -48,6 +62,8 @@ def edit_url_camera(request):
     return JsonResponse(CAM_DATA, safe=False)
 
 
+@login_required(login_url=settings.LOGOUT_REDIRECT_URL,
+redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 def get_camera_position(request):
     all_cams = []
 
@@ -63,14 +79,20 @@ def get_camera_position(request):
     return JsonResponse({'cameras': all_cams}, safe=False)
 
 
-class CamListView(ListView):
+class CamListView(LoginRequiredMixin,ListView):
     model = Camera
     template_name = 'cam/cam_list.html'
 
+    login_url = settings.LOGOUT_REDIRECT_URL
+    redirect_field_name = settings.LOGOUT_REDIRECT_URL
+    
 
-class CamCreateView(BaseView):
+
+class CamCreateView(LoginRequiredMixin, BaseView):
     template = 'cam/cam_add.html'
 
+    login_url = settings.LOGOUT_REDIRECT_URL
+    redirect_field_name = settings.LOGOUT_REDIRECT_URL
     def get(self, request):
         return self.render_template(request, {'data': {
             "MAP_API": settings.MAP_API,

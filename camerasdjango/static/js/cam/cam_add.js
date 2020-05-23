@@ -1,6 +1,9 @@
 var player = document.getElementById('player');
 var web_cam_checkbox = document.getElementById("web_cam_checkbox")
 
+
+
+console.log(user_id)
 web_cam_checkbox.onclick = function(evt) {
     if (web_cam_checkbox.checked) {
         url_cam.value = 0
@@ -42,6 +45,7 @@ sumbit_button.onclick = function() {
     else
         CAM_DATA.web_cam = 'False'
     CAM_DATA.url = url_cam.value
+    CAM_DATA.user_id = user_id
     CAM_DATA.detector_type = model_type_list.options[model_type_list.selectedIndex].value;
     CAM_DATA.geopoint = longitude_input.value + ',' + latitude_input.value
     console.log(CAM_DATA)

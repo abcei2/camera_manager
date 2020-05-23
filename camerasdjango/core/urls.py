@@ -18,9 +18,12 @@ urlpatterns = [
             namespace='face_recognition'
         )
     ),
+    path('users/', include(
+        ('users.urls', 'users'), namespace='users')),
     path('admin/', admin.site.urls),
 
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+    
 ]
 
 if settings.DEBUG:

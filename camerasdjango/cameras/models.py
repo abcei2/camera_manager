@@ -7,12 +7,19 @@ from django.utils.translation import ugettext_lazy as _
 from decimal import Decimal
 
 
+from users.models import CustomUser
+
+
 DETECTOR_TYPES = (
     ('face_recogntion', _('Face recognition')),
 )
 
 
 class Camera(BaseModel):
+
+    #RELATION OF CAMERA TO USER
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, default=1)
+
     detector_type = models.CharField(
         max_length=32,
         choices=DETECTOR_TYPES,
@@ -25,15 +32,15 @@ class Camera(BaseModel):
     is_active = models.BooleanField(default=True)
     web_cam = models.BooleanField(default=False)
 
-    @cached_property
-    def coords(self):
-        return list(map(lambda x: Decimal(x), self.geopoint.split(',')))
+    # @cached_property
+    # def coords(self):
+    #     return list(map(lambda x: Decimal(x), self.geopoint.split(',')))
 
-    @cached_property
-    def latlon_geopoint(self):
-        gpoint = self.coords
-        gpoint.reverse()
-        return ','.join([str(gp) for gp in gpoint])
+    # @cached_property
+    # def latlon_geopoint(self):
+    #     gpoint = self.coords
+    #     gpoint.reverse()
+    #     return ','.join([str(gp) for gp in gpoint])
 
     @cached_property
     def last_frame(self):

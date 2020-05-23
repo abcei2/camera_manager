@@ -3,4 +3,4 @@ from django.urls import reverse
 
 
 def home(request):
-    return HttpResponseRedirect(reverse('cameras:manage_cameras'))
+    return HttpResponseRedirect(reverse('users:login'))

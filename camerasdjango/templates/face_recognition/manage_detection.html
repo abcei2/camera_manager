@@ -17,7 +17,7 @@
     </div>
 
     <div class="row">
-        <div class="col" id="web_container">
+        <div class="col" id="player_container">
             <div class="embed-responsive embed-responsive-4by3">
                 <video id="player" class="embed-responsive-item" autoplay></video>
             </div>
@@ -141,12 +141,12 @@
     </div>
 </div>
 
+{{ data|json_script:"data" }}
+<script src="{% static 'js/face_recognition/manage_detection.js' %}"></script>
 {% endblock %}
 
 {% block bodyafter %}
 
-{{ data|json_script:"data" }}
-<script src="{% static 'js/face_recognition/manage_detection.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/Chart.min.js' %}"></script>
 
 {% endblock %}

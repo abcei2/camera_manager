@@ -1,0 +1,10 @@
+{% extends 'core/base.html' %}
+{%block title%}Home{%endblock title%}
+{%block main%}
+<a href="{% url 'users:signup' %}">NUEVO USUARIO</a> 
+
+    <body>
+    	{% load render_table from django_tables2 %}
+        {% render_table table %}
+    </body>
+{%endblock%}
