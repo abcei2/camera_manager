@@ -23,7 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-    
 ]
 
 if settings.DEBUG:

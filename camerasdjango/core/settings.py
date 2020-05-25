@@ -10,6 +10,8 @@ from core.system import (
     load_env_settings,
 )
 
+DJANGO_ENV = os.getenv('DJANGO_ENV', 'DEV').upper()
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO_DIR = os.path.dirname(BASE_DIR)
@@ -35,7 +37,6 @@ ENABLE_DEBUG_TOOLBAR = False
 
 ALLOWED_HOSTS = ["*"]
 USE_X_FORWARDED_HOST = True
-FORCE_SCRIPT_NAME = '/cameras/'
 JSON_DIR = os.path.join(BASE_DIR, 'json')
 TEMPLATES_DIR = os.path.join(BASE_DIR, 'templates')
 STATICFILES_DIR = os.path.join(BASE_DIR, 'static')
@@ -96,6 +97,7 @@ SETTINGS_SOURCES = {
 ###############################################################################
 # Application definition
 ###############################################################################
+AUTH_USER_MODEL = 'users.CustomUser'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -208,21 +210,19 @@ LOCALE_PATHS = (
 )
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
+# Static files (prod subpath)
+if DJANGO_ENV == 'PROD':
+    FORCE_SCRIPT_NAME = '/cameras/'
+    STATIC_URL = '/cameras/static/'
+    MEDIA_URL = '/cameras/media/'
+    LOGIN_REDIRECT_URL = '/cameras/cameras/manage_cameras/'
+    LOGOUT_REDIRECT_URL = '/cameras/users/login/'
 
-# STATIC_URL = '/static/'
-# MEDIA_URL = '/media/'
-# AUTH_USER_MODEL='users.CustomUser'
-# LOGIN_REDIRECT_URL = '/cameras/manage_cameras/'
-# LOGOUT_REDIRECT_URL = '/users/login/'
-
-
-STATIC_URL = '/cameras/static/'
-MEDIA_URL = '/cameras/media/'
-AUTH_USER_MODEL='users.CustomUser'
-LOGIN_REDIRECT_URL = '/cameras/cameras/manage_cameras/'
-LOGOUT_REDIRECT_URL = '/cameras/users/login/'
+else:
+    STATIC_URL = '/static/'
+    MEDIA_URL = '/media/'
+    LOGIN_REDIRECT_URL = '/cameras/manage_cameras/'
+    LOGOUT_REDIRECT_URL = '/users/login/'
 
 
 # Debug toolbar
