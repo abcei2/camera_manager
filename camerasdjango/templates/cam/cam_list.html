@@ -3,7 +3,7 @@
 {% load i18n %}
 {% load static %}
 
-{% block title %}Home{% endblock title %}
+{% block title %}{% trans "Home" %}{% endblock title %}
 
 {% block main %}
 <a href="{% url 'cameras:new_camera' %}" class="px-3 py-2">
