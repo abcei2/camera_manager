@@ -40,9 +40,9 @@ class CustomUserCreationForm(UserCreationForm):
         if commit:
             user.save()
 
-        for aux in self.cleaned_data["groups"]:
-            print(aux)
-            aux.user_set.add(user)
+        for group in self.cleaned_data.get("groups", []):
+            group.user_set.add(user)
+
         return user
         # is_staff=forms.BooleanField(required=True)
     # UserCreationForm.groups.add(group = Group(name="employer"))
