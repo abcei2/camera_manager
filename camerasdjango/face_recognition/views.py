@@ -51,8 +51,6 @@ def manage_detection(request, id_cam):
             'url': camera.url,
             'is_web_cam': camera.web_cam,
             'faces_registered': list(faces),
-
-            'URL_FREE_DETECTOR':reverse('face_recognition:free_detector'),
             'URL_EDIT': reverse('cameras:edit_url_camera'),
             'URL_GET_DETECTIONS': reverse('face_recognition:get_detection'),
             'URL_ADD_NEW_FACE': reverse('face_recognition:add_new_face'),
