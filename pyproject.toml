@@ -18,6 +18,7 @@ mrcnn = "^0.2"
 geopy = "^1.21.0"
 requests = "^2.23.0"
 django_tables2 = "^2.3.1"
+django-debug-toolbar = "^2.2"
 
 [tool.poetry.dev-dependencies]
 

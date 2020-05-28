@@ -1,33 +1,35 @@
 {% extends 'core/base.html' %}
+
+{% load i18n %}
 {% load crispy_forms_tags %}
-{% block title %}Iniciar sesion{% endblock title %}
+
+{% block title %}{% trans "Login" %}{% endblock title %}
 
 {% block main %}
 {% if user.is_authenticated %}
     <meta http-equiv="refresh" content="0; url={% url 'cameras:manage_cameras' %}">
 {% else %}
-    <h2>Iniciar sesion</h2>
     <div class="container">
-        <h2>Login Form</h2>
-        <form method="POST" id="add_form" action="{% url 'users:login' %}">{% csrf_token %}
-          <div class="form-group">
-            <label >User Name</label>
-            <div class="input"><input type="text" name="username" required="required"></div>
-            <div class="clear"></div>
-        </div>
-        <div class="form-group">
-            <label >Password</label>
-            <div class="input"><input type="password" name="password" required="required"></div>
-            <div class="clear"></div>
-        </div>
-        <div class="form-group"> 
-          <label></label>
-            <div class="submit">
-              <button type="submit" class="btn-primary">Login</button>
+        <br>
+        <center>
+            <div>
+                <h2>{% trans "Login" %}</h2>
+                <form method="POST" id="add_form" action="{% url 'users:login' %}">{% csrf_token %}
+                    <div class="form-group">
+                        <label class="col-sm-2 col-form-label">{% trans "Username" %}</label>
+                        <input type="text" name="username" required="required">
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 col-form-label">{% trans "Password" %}</label>
+                        <input type="password" name="password" required="required">
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">{% trans "Enter" %}</button>
+                    </div>
+                    <div style="max-width: 300px; color: red">{{form.non_field_errors}}</div>
+                </form>
             </div>
-            <div class="clear"></div> </div>
-    </form>
+        </center>
     </div>
 {% endif %}
-
 {% endblock %}
