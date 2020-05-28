@@ -29,8 +29,7 @@ from django.db.models import Count
 register_face_service_url="https://ai.tucanoar.com/faces_classify/register_face/"
 update_model_service_url="https://ai.tucanoar.com/faces_classify/update_model/"
 delete_images_service_url="https://ai.tucanoar.com/faces_classify/delete_images/"
-detect_faces_service_url="http://localhost:5000/detect_faces/"
-#detect_faces_service_url="https://ai.tucanoar.com/faces/detect_faces/"
+detect_faces_service_url="https://ai.tucanoar.com/faces/detect_faces/"
 classify_faces_service_url="https://ai.tucanoar.com/faces_classify/classify_faces/"
 
 # global detecting, counter_tabs
@@ -43,15 +42,6 @@ redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 @require_GET
 def manage_detection(request, id_cam):
     
-    # if request.session.get('bussy', False):
-    #     request.session["bussy"].append(request.user.id)
-    #     request.session["bussy2"].append(counter_tabs)
-    #     print(request.session.get('bussy', False))
-    #     print(request.session.get('bussy2', False))
-    # else:
-    #     request.session["bussy"]=[request.user.id]
-    #     request.session["bussy2"]=[counter_tabs]
-        
     faces = Face.objects.values_list('name', flat=True)
     camera = Camera.objects.get(id=id_cam)
 
@@ -77,13 +67,6 @@ def manage_detection(request, id_cam):
     }
     return render(request, 'face_recognition/manage_detection.html', context)
 
-
-@csrf_protect
-@require_POST
-def free_detector(request):
-    print("FREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
-
-    return JsonResponse({'message': _("Done")})
 
 @login_required(login_url=settings.LOGOUT_REDIRECT_URL,
 redirect_field_name=settings.LOGOUT_REDIRECT_URL)

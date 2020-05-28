@@ -1,7 +1,8 @@
 
 let is_mobile = false
 let player_mobile = document.getElementById("player_mobile")
-let debugger1 = document.getElementById("debugger")
+
+
 
 if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
 
@@ -86,7 +87,6 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
                 img.onload = function() {
                     let width1=0
                     let height1=0
-                    debugger1.innerHTML=this.width+" ssa  "+ this.height
                     if(this.width>this.height){
                         width1 = 600;
                         height1 = width1 * (img.height / img.width)
@@ -142,7 +142,6 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
                         detection_canvas.height=height1
                         detection_context_aux.drawImage(this, 0, 0, detection_canvas_aux.width, detection_canvas_aux.height);
                         
-                        //detection_context_aux.rotate(270 * Math.PI / 180);
                         image = detection_canvas_aux.toDataURL(image_format);
                         
                         $.post(DATA.URL_GET_DETECTIONS, {
