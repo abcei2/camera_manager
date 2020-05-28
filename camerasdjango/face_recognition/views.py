@@ -29,7 +29,8 @@ from django.db.models import Count
 register_face_service_url="https://ai.tucanoar.com/faces_classify/register_face/"
 update_model_service_url="https://ai.tucanoar.com/faces_classify/update_model/"
 delete_images_service_url="https://ai.tucanoar.com/faces_classify/delete_images/"
-detect_faces_service_url="https://ai.tucanoar.com/faces/detect_faces/"
+detect_faces_service_url="http://localhost:5000/detect_faces/"
+#detect_faces_service_url="https://ai.tucanoar.com/faces/detect_faces/"
 classify_faces_service_url="https://ai.tucanoar.com/faces_classify/classify_faces/"
 
 # global detecting, counter_tabs
@@ -199,6 +200,29 @@ def add_new_face(request):
 
     return JsonResponse({'message': _("Face registered")})
 
+def image_resize(image, width = None, inter = cv2.INTER_AREA):
+    # initialize the dimensions of the image to be resized and
+    # grab the image size
+    dim = None
+    (h, w) = image.shape[:2]
+
+    # if both the width and height are None, then return the
+    # original image
+    if width is None:
+        return image
+
+    # calculate the ratio of the height and construct the
+    # dimensions
+    height_desired = int(float(width*h) / float(w))
+    dim = (width, height_desired)
+
+    # otherwise, the height is None
+
+    # resize the image
+    resized = cv2.resize(image, dim, interpolation = inter)
+
+    # return the resized image
+    return resized
 
 bussy = False
 
@@ -212,6 +236,7 @@ def get_detection(request):
     
     img = request.POST.get('img')
     id_cam=request.POST.get('id_cam')
+    rotate_angle=int(request.POST.get('rotate_angle'))
 
     global bussy
 
@@ -219,14 +244,21 @@ def get_detection(request):
 
     if bussy:
         return JsonResponse({'message': _("Detector busy")}, status=503)
+    bussy = True
+    frame = frame_from_b64image(img.split(';base64,')[1])
+    print(type(rotate_angle))
+    if  rotate_angle == 270:
+        print("ROTATING")
+        frame=cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    elif rotate_angle == 180:
+        frame=cv2.rotate(frame, cv2.ROTATE_180)
+    elif rotate_angle == 90:
+        frame=cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
     
 
-    bussy = True
-
-    frame = frame_from_b64image(img.split(';base64,')[1])
     frame_not_draw = frame.copy()
-    frame_to_upload = cv2.imencode(".png", frame)[1]
 
+    frame_to_upload = cv2.imencode(".jpg", frame)[1]
     response = requests.post(
         detect_faces_service_url,
         files={'file': ('image.jpg', frame_to_upload, 'multipart/form-data')}
@@ -263,6 +295,7 @@ def get_detection(request):
     ]
 
     if face_image.size != 0:
+
         face_to_classify = cv2.imencode(".jpg", face_image)[1]
 
     response = requests.post(

@@ -50,9 +50,8 @@ const detection_context = detection_canvas.getContext('2d');
 const detection_context_aux = detection_canvas_aux.getContext('2d');
 
 let counter_context = 0
-let image_format = "image/png"
+let image_format = "image/jpg"
 let schedule_task = false
-
 
 document.writeln("<script type='text/javascript' src='../static/js/face_recognition/utils/face_registered_list.js'></script>");
 document.writeln("<script type='text/javascript' src='../static/js/face_recognition/utils/main_buttons.js'></script>");
