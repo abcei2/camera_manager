@@ -227,9 +227,7 @@ def get_detection(request):
         return JsonResponse({'message': _("Detector busy")}, status=503)
     bussy = True
     frame = frame_from_b64image(img.split(';base64,')[1])
-    print(type(rotate_angle))
     if  rotate_angle == 270:
-        print("ROTATING")
         frame=cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
     elif rotate_angle == 180:
         frame=cv2.rotate(frame, cv2.ROTATE_180)

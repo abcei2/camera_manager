@@ -89,7 +89,7 @@ if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(naviga
                     let height1=0
                     if(this.width>this.height){
                         width1 = 600;
-                        height1 = width1 * (img.height / img.width)
+                        height1 = width1 * (this.height / this.width)
                     } else {
                         height1 = 600;
                         width1 = height1  * ( this.width/this.height);
