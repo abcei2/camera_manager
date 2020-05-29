@@ -56,7 +56,7 @@ capture_button.onclick = function(ev) {
         detection_context_aux.drawImage(player, 0, 0, detection_canvas_aux.width, detection_canvas_aux.height);
         image = detection_canvas_aux.toDataURL(image_format);
     
-        $.post(DATA.URL_GET_DETECTIONS, {id_cam:DATA.id_cam, img: image})
+        $.post(DATA.URL_GET_DETECTIONS, {id_cam:DATA.id_cam, img: image, rotate_angle:0})
             .done(function(response) {
                 let img = new Image()
                 img.src = response.img

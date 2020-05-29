@@ -29,7 +29,8 @@ from django.db.models import Count
 register_face_service_url="https://ai.tucanoar.com/faces_classify/register_face/"
 update_model_service_url="https://ai.tucanoar.com/faces_classify/update_model/"
 delete_images_service_url="https://ai.tucanoar.com/faces_classify/delete_images/"
-detect_faces_service_url="https://ai.tucanoar.com/faces/detect_faces/"
+#detect_faces_service_url="https://ai.tucanoar.com/faces/detect_faces/"
+detect_faces_service_url="https://ai.tucanoar.com/masks/detect/"
 classify_faces_service_url="https://ai.tucanoar.com/faces_classify/classify_faces/"
 
 # global detecting, counter_tabs
