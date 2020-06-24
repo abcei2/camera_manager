@@ -29,7 +29,8 @@ from django.db.models import Count
 register_face_service_url="https://ai.tucanoar.com/faces_classify/register_face/"
 update_model_service_url="https://ai.tucanoar.com/faces_classify/update_model/"
 delete_images_service_url="https://ai.tucanoar.com/faces_classify/delete_images/"
-detect_faces_service_url="https://ai.tucanoar.com/faces/detect_faces/"
+#detect_faces_service_url="https://ai.tucanoar.com/faces/detect_faces/"
+detect_faces_service_url="https://ai.tucanoar.com/masks/detect/"
 classify_faces_service_url="https://ai.tucanoar.com/faces_classify/classify_faces/"
 
 # global detecting, counter_tabs
@@ -42,15 +43,6 @@ redirect_field_name=settings.LOGOUT_REDIRECT_URL)
 @require_GET
 def manage_detection(request, id_cam):
     
-    # if request.session.get('bussy', False):
-    #     request.session["bussy"].append(request.user.id)
-    #     request.session["bussy2"].append(counter_tabs)
-    #     print(request.session.get('bussy', False))
-    #     print(request.session.get('bussy2', False))
-    # else:
-    #     request.session["bussy"]=[request.user.id]
-    #     request.session["bussy2"]=[counter_tabs]
-        
     faces = Face.objects.values_list('name', flat=True)
     camera = Camera.objects.get(id=id_cam)
 
@@ -60,8 +52,6 @@ def manage_detection(request, id_cam):
             'url': camera.url,
             'is_web_cam': camera.web_cam,
             'faces_registered': list(faces),
-
-            'URL_FREE_DETECTOR':reverse('face_recognition:free_detector'),
             'URL_EDIT': reverse('cameras:edit_url_camera'),
             'URL_GET_DETECTIONS': reverse('face_recognition:get_detection'),
             'URL_ADD_NEW_FACE': reverse('face_recognition:add_new_face'),
@@ -76,13 +66,6 @@ def manage_detection(request, id_cam):
     }
     return render(request, 'face_recognition/manage_detection.html', context)
 
-
-@csrf_protect
-@require_POST
-def free_detector(request):
-    print("FREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
-
-    return JsonResponse({'message': _("Done")})
 
 @login_required(login_url=settings.LOGOUT_REDIRECT_URL,
 redirect_field_name=settings.LOGOUT_REDIRECT_URL)
@@ -199,6 +182,29 @@ def add_new_face(request):
 
     return JsonResponse({'message': _("Face registered")})
 
+def image_resize(image, width = None, inter = cv2.INTER_AREA):
+    # initialize the dimensions of the image to be resized and
+    # grab the image size
+    dim = None
+    (h, w) = image.shape[:2]
+
+    # if both the width and height are None, then return the
+    # original image
+    if width is None:
+        return image
+
+    # calculate the ratio of the height and construct the
+    # dimensions
+    height_desired = int(float(width*h) / float(w))
+    dim = (width, height_desired)
+
+    # otherwise, the height is None
+
+    # resize the image
+    resized = cv2.resize(image, dim, interpolation = inter)
+
+    # return the resized image
+    return resized
 
 bussy = False
 
@@ -212,6 +218,7 @@ def get_detection(request):
     
     img = request.POST.get('img')
     id_cam=request.POST.get('id_cam')
+    rotate_angle=int(request.POST.get('rotate_angle'))
 
     global bussy
 
@@ -219,14 +226,19 @@ def get_detection(request):
 
     if bussy:
         return JsonResponse({'message': _("Detector busy")}, status=503)
+    bussy = True
+    frame = frame_from_b64image(img.split(';base64,')[1])
+    if  rotate_angle == 270:
+        frame=cv2.rotate(frame, cv2.ROTATE_90_COUNTERCLOCKWISE)
+    elif rotate_angle == 180:
+        frame=cv2.rotate(frame, cv2.ROTATE_180)
+    elif rotate_angle == 90:
+        frame=cv2.rotate(frame, cv2.ROTATE_90_CLOCKWISE)
     
 
-    bussy = True
-
-    frame = frame_from_b64image(img.split(';base64,')[1])
     frame_not_draw = frame.copy()
-    frame_to_upload = cv2.imencode(".png", frame)[1]
 
+    frame_to_upload = cv2.imencode(".jpg", frame)[1]
     response = requests.post(
         detect_faces_service_url,
         files={'file': ('image.jpg', frame_to_upload, 'multipart/form-data')}
@@ -263,6 +275,7 @@ def get_detection(request):
     ]
 
     if face_image.size != 0:
+
         face_to_classify = cv2.imencode(".jpg", face_image)[1]
 
     response = requests.post(
