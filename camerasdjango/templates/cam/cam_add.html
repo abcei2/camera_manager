@@ -47,7 +47,7 @@
 
     {{ data|json_script:"data" }}
     <script >
-        var user_id={{ request.user.id }} 
+        var user_id="{{ request.user.id }}"
     </script>
     <script src="{% static 'js/cam/cam_add.js' %}" type="text/javascript"> </script>
 {% endblock  %}

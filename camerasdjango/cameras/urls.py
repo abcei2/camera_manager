@@ -6,7 +6,6 @@ from cameras.views import (
     edit_url_camera, get_camera_position
 )
 
-
 app_name = 'cameras'
 urlpatterns = [
     path('new_camera/', CamCreateView.as_view(), name='new_camera'),

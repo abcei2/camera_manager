@@ -97,7 +97,6 @@ SETTINGS_SOURCES = {
 ###############################################################################
 # Application definition
 ###############################################################################
-AUTH_USER_MODEL = 'users.CustomUser'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -110,12 +109,11 @@ INSTALLED_APPS = [
 
     'django_extensions',
     'crispy_forms',
+    'chartjs',
 
     'core',
     'cameras',
     'face_recognition',
-    'users',
-    'chartjs',
 ]
 
 MIDDLEWARE = [
@@ -128,8 +126,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
-ROOT_URLCONF = 'core.urls'
 
 STATICFILES_DIRS = [STATICFILES_DIR]
 TEMPLATES = [
@@ -148,8 +144,9 @@ TEMPLATES = [
     },
 ]
 
+AUTH_USER_MODEL = 'cameras.User'
+ROOT_URLCONF = 'core.urls'
 WSGI_APPLICATION = 'core.wsgi.application'
-
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 ###############################################################################
@@ -192,13 +189,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = 'es'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
-
 
 LANGUAGES = (
     ('en', _('English')),
@@ -216,13 +210,13 @@ if DJANGO_ENV == 'PROD':
     STATIC_URL = '/cameras/static/'
     MEDIA_URL = '/cameras/media/'
     LOGIN_REDIRECT_URL = '/cameras/cameras/manage_cameras/'
-    LOGOUT_REDIRECT_URL = '/cameras/users/login/'
+    LOGOUT_REDIRECT_URL = '/cameras/login/'
 
 else:
     STATIC_URL = '/static/'
     MEDIA_URL = '/media/'
     LOGIN_REDIRECT_URL = '/cameras/manage_cameras/'
-    LOGOUT_REDIRECT_URL = '/users/login/'
+    LOGOUT_REDIRECT_URL = '/login/'
 
 
 # Debug toolbar

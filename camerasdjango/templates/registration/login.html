@@ -14,10 +14,10 @@
         <center>
             <div>
                 <h2>{% trans "Login" %}</h2>
-                <form method="POST" id="add_form" action="{% url 'users:login' %}">{% csrf_token %}
+                <form method="POST" id="add_form" action="{% url 'login' %}">{% csrf_token %}
                     <div class="form-group">
-                        <label class="col-sm-2 col-form-label">{% trans "Username" %}</label>
-                        <input type="text" name="username" required="required">
+                        <label class="col-sm-2 col-form-label">{% trans "Email" %}</label>
+                        <input type="text" name="email" required="required">
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 col-form-label">{% trans "Password" %}</label>
@@ -26,7 +26,9 @@
                     <div class="form-group">
                         <button type="submit" class="btn btn-primary">{% trans "Enter" %}</button>
                     </div>
-                    <div style="max-width: 300px; color: red">{{form.non_field_errors}}</div>
+                    {% if errors %}
+                        <div style="max-width: 300px; color: red">{% trans "Error, try again." %}</div>
+                    {% endif %}
                 </form>
             </div>
         </center>

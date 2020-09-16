@@ -1,9 +1,6 @@
 var player = document.getElementById('player');
 var web_cam_checkbox = document.getElementById("web_cam_checkbox")
 
-
-
-console.log(user_id)
 web_cam_checkbox.onclick = function(evt) {
     if (web_cam_checkbox.checked) {
         url_cam.value = 0
@@ -12,7 +9,6 @@ web_cam_checkbox.onclick = function(evt) {
         url_cam.disabled = false
 
     }
-
 }
 
 var DATA = JSON.parse(document.getElementById('data').textContent)

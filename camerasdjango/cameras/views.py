@@ -3,13 +3,11 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.views.generic import ListView
 from django.urls import reverse
-
-from core.view_utils import BaseView
-from cameras.models import Camera
-from users.models import CustomUser
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from core.view_utils import BaseView
+from cameras.models import User, Camera
 
 
 @login_required(login_url=settings.LOGOUT_REDIRECT_URL,
@@ -31,7 +29,7 @@ def create_new_camera(request):
     user_id = request.GET.get('user_id')
 
     
-    user = CustomUser.objects.get(id=user_id)
+    user = User.objects.get(id=user_id)
     new_cam = Camera(url=url, geopoint=geopoint,
                      detector_type=detector_type, web_cam=web_cam,user=user)
     new_cam.save()
@@ -79,7 +77,7 @@ def get_camera_position(request):
     return JsonResponse({'cameras': all_cams}, safe=False)
 
 
-class CamListView(LoginRequiredMixin,ListView):
+class CamListView(LoginRequiredMixin, ListView):
     model = Camera
     template_name = 'cam/cam_list.html'
 
