@@ -7,7 +7,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from core.view_utils import BaseView
-from cameras.models import User, Camera
+from core.models import User
+from cameras.models import Camera
 
 
 @login_required(login_url=settings.LOGOUT_REDIRECT_URL,

@@ -133,6 +133,17 @@ tablib = ["tablib"]
 
 [[package]]
 category = "main"
+description = "Web APIs for Django, made easy."
+name = "djangorestframework"
+optional = false
+python-versions = ">=3.5"
+version = "3.11.1"
+
+[package.dependencies]
+django = ">=1.11"
+
+[[package]]
+category = "main"
 description = "The geodesic routines from GeographicLib"
 name = "geographiclib"
 optional = false
@@ -429,7 +440,8 @@ python-versions = "*"
 version = "0.1.9"
 
 [metadata]
-content-hash = "98152103d971ac986b16797db5fd6c6363068c6ba6bd0540c02558429de6a0e7"
+content-hash = "8a095b80bb0501ff91cc49ce266524a34991ed545f4c7f7ab13eb5b09a8eca5a"
+lock-version = "1.0"
 python-versions = "^3.7"
 
 [metadata.files]
@@ -484,6 +496,10 @@ django-extensions = [
 django-tables2 = [
     {file = "django-tables2-2.3.1.tar.gz", hash = "sha256:28da782f81f046c7d921246f43e7ba2df430cafe5a0e00a0f9dadef25a0e487d"},
     {file = "django_tables2-2.3.1-py2.py3-none-any.whl", hash = "sha256:7e425ad51e22caf5470351981f0fcd4fd35d4cf2d4c3b76fa1b7bf56251778d1"},
+]
+djangorestframework = [
+    {file = "djangorestframework-3.11.1-py3-none-any.whl", hash = "sha256:8b1ac62c581dbc5799b03e535854b92fc4053ecfe74bad3f9c05782063d4196b"},
+    {file = "djangorestframework-3.11.1.tar.gz", hash = "sha256:6dd02d5a4bd2516fb93f80360673bf540c3b6641fec8766b1da2870a5aa00b32"},
 ]
 geographiclib = [
     {file = "geographiclib-1.50-py3-none-any.whl", hash = "sha256:51cfa698e7183792bce27d8fb63ac8e83689cd8170a730bf35e1a5c5bf8849b9"},

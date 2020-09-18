@@ -105,16 +105,24 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_tables2',
 
+    'django_tables2',
     'django_extensions',
     'crispy_forms',
     'chartjs',
+    'rest_framework',
+    'rest_framework.authtoken',
 
     'core',
     'cameras',
     'face_recognition',
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -144,7 +152,7 @@ TEMPLATES = [
     },
 ]
 
-AUTH_USER_MODEL = 'cameras.User'
+AUTH_USER_MODEL = 'core.User'
 ROOT_URLCONF = 'core.urls'
 WSGI_APPLICATION = 'core.wsgi.application'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'

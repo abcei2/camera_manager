@@ -4,13 +4,17 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.views.i18n import JavaScriptCatalog
 
-from core.views import home, login_user
+from core.views import login_user
 
 
 urlpatterns = [
-    path('', home, name='home'),
+    # accounts/admin
     path('login/', login_user, name='login'),
     path('', include('django.contrib.auth.urls')),
+    path('admin/', admin.site.urls),
+
+    # apps
+    path('api/', include(('api_manager.urls', 'api_manager'), namespace='api')),
     path('cameras/', include(
         ('cameras.urls', 'cameras'), namespace='cameras')),
     path(
@@ -20,7 +24,8 @@ urlpatterns = [
             namespace='face_recognition'
         )
     ),
-    path('admin/', admin.site.urls),
+
+    # other
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 ]
 
